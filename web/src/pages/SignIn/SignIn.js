@@ -1,17 +1,19 @@
 import React, {useState} from 'react';
-import {Grid, Paper, Box, Typography, TextField, IconButton, InputAdornment} from '@mui/material';
+import {Grid, Paper, Box, Typography, TextField, IconButton, InputAdornment, Alert} from '@mui/material';
 import {Visibility, VisibilityOff} from '@mui/icons-material';
 import {useNavigate} from 'react-router-dom';
 import * as yup from 'yup';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import '../SignIn/SignIn.scss';
+import axios from 'axios';
 
 const initialState = {email: '', password: ''};
 
 function SignIn() 
 {
     const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState('');
 
     const [formData, setFormData] = useState(initialState);
     
@@ -30,8 +32,18 @@ function SignIn()
         resolver: yupResolver(schema),
     });
 
-    const onSubmit = async () => {
-        console.log(formData);
+    const onSubmit = () => {
+        axios.post('http://localhost:3001/signin/user-sign-in', {
+            email: formData.email,
+            password: formData.password
+        })
+        .then((response) => {
+            response.status === 200 && sessionStorage.setItem('token', response.data.accessToken);
+        })
+        .catch((error) => {
+            (error.response.status === 404 || error.response.status === 422)? 
+                setErrorMessage(error.response.data) : alert('A intervenit o eroare. Vă rugăm să încercați mai târziu.');
+        });
     };
 
     return (
@@ -75,6 +87,7 @@ function SignIn()
                                     />
                                     <Typography className='error'>{errors.password?.message}</Typography>
                                 </Grid>
+                                {errorMessage && <Alert severity='error' sx={{width: '100%'}}>{errorMessage}</Alert>}
                                 <Grid item xs={12} py={3}>
                                     <button type='submit' className='submit-button'>Intră în cont</button>
                                 </Grid>
