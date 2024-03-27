@@ -5,6 +5,9 @@ const cors = require('cors');
 app.use(express.json());
 app.use(cors());
 
+const signupRoute = require('./signup/signup.js');
+app.use('/signup', signupRoute);
+
 app.listen(3001, (error) => {
     if(error)
     {

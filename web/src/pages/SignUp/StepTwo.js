@@ -1,12 +1,15 @@
-import React from 'react';
-import {Grid, Typography, TextField, Box} from '@mui/material';
+import React, {useState} from 'react';
+import {Grid, Typography, TextField, Box, Alert} from '@mui/material';
 import * as yup from 'yup';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import axios from 'axios';
 
 function StepTwo({formData, handleChange, handleNextStep, handlePrevStep}) 
 {
+    const [errorMessage, setErrorMessage] = useState('');
+
     const schema = yup.object().shape({
         stampCode: yup.string().required('Câmp obligatoriu').min(6, 'Cod invalid').max(6, 'Cod invalid').matches(/[0-9]+$/, 'Cod invalid')
     });
@@ -15,8 +18,22 @@ function StepTwo({formData, handleChange, handleNextStep, handlePrevStep})
         resolver: yupResolver(schema)
     });
 
-    const onSubmit = async () => {
-        handleNextStep();
+    const onSubmit = () => {
+        axios.get('http://localhost:3001/signup/stepTwo', {
+            params : {
+                lastname: formData.lastname,
+                firstname: formData.firstname,
+                CNP: formData.CNP,
+                stampCode: formData.stampCode
+            }
+        })
+        .then((response) => {
+            response.status === 200 && handleNextStep();
+        })
+        .catch((error) => {
+            (error.response.status === 404 || error.response.status === 409)? 
+                setErrorMessage(error.response.data) : alert('A intervenit o eroare. Vă rugăm să încercați mai târziu.');
+        });
     };
 
     return (
@@ -36,6 +53,8 @@ function StepTwo({formData, handleChange, handleNextStep, handlePrevStep})
                     />
                     <Typography className='error'>{errors.stampCode?.message}</Typography>
                 </Grid>
+
+                {errorMessage &&  <Alert severity='error' sx={{width: '100%'}}>{errorMessage}</Alert>}
 
                 <Grid item xs={12} pt={2} pb={7}>
                     <Typography className='note-description'>Notă: Vă rugăm să introduceți codul de parafă pentru a dovedi apartenența dumneavoastră la sistemul medical.</Typography>

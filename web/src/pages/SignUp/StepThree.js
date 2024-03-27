@@ -1,15 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {Grid, Typography, TextField, Box, IconButton, InputAdornment} from '@mui/material';
+import {useNavigate} from 'react-router-dom';
+import {Grid, Typography, TextField, Box, IconButton, InputAdornment, Alert} from '@mui/material';
 import {Visibility, VisibilityOff} from '@mui/icons-material';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import * as yup from 'yup';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import YupPassword from 'yup-password';
+import axios from 'axios';
 YupPassword(yup)
 
 function StepThree({formData, handleChange, handlePrevStep}) 
 {
+    const [errorMessage, setErrorMessage] = useState('');
+    const navigate = useNavigate();
     const [changed, setChanged] = useState(false);
 
     const [showPassword, setShowPassword] = useState(false);
@@ -30,8 +34,19 @@ function StepThree({formData, handleChange, handlePrevStep})
         resolver: yupResolver(schema),
     });
 
-    const onSubmit =  async () => {
-       console.log(formData);
+    const onSubmit =  () => {
+        axios.post('http://localhost:3001/signup/stepThree', {
+            email: formData.email,
+            password: formData.password,
+            CNP: formData.CNP
+        })
+        .then((response) => {
+            response.status === 200 && sessionStorage.setItem('token', response.data.accessToken);
+        })
+        .catch((error) => {
+            (error.response.status === 409)? 
+                setErrorMessage(error.response.data) : alert('A intervenit o eroare. Vă rugăm să încercați mai târziu.');
+        });
     };
 
     const setCorrect = (id) => {
@@ -81,7 +96,7 @@ function StepThree({formData, handleChange, handlePrevStep})
                     />
                     <Typography className='error'>{errors.email?.message}</Typography>
                 </Grid>
-
+                {errorMessage &&  <Alert severity='error' width={'100%'}>{errorMessage}</Alert>}
                 <Grid item xs={12} py={1}>
                     <TextField 
                         {...register('password')} 
