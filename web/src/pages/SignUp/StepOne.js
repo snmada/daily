@@ -67,7 +67,7 @@ function StepOne({formData, handleChange, handleNextStep})
 
                 <Grid item xs={12} className='grid-signin'>
                     <Typography fontSize={'15px'}>Aveți un cont creat?</Typography>
-                    <Typography className='signin-link' onClick={() => {navigate('/login')}}>Conectați-vă</Typography>
+                    <Typography className='signin-link' onClick={() => {navigate('/signin')}}>Conectați-vă</Typography>
                 </Grid>
                 <Grid item xs={12} py={2}>
                     <Box className='box-next'>
