@@ -38,7 +38,11 @@ function SignIn()
             password: formData.password
         })
         .then((response) => {
-            response.status === 200 && sessionStorage.setItem('token', response.data.accessToken);
+            if(response.status === 200)
+            {
+                sessionStorage.setItem('token', response.data.accessToken);
+                navigate('/dashboard');
+            }
         })
         .catch((error) => {
             (error.response.status === 404 || error.response.status === 422)? 

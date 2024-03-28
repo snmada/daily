@@ -1,0 +1,12 @@
+.dashboard{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+
+    .main-content{
+        flex: 1;
+        height: 100vh;
+        overflow-y: auto;
+        margin: 0px 25px;
+    }
+}
