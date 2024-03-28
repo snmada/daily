@@ -27,7 +27,7 @@ function StepThree({formData, handleChange, handlePrevStep})
     const schema = yup.object().shape({
         email: yup.string().required('Câmp obligatoriu').email('Adresă de email invalidă'),
         password: yup.string().password(),
-        confirmPassword: yup.string().required('Câmp obligatoriu').oneOf([yup.ref('password'), null], "Parolele introduse nu coincid")
+        confirmPassword: yup.string().required('Câmp obligatoriu').oneOf([yup.ref('password'), null], 'Parolele introduse nu coincid')
     });
 
     const {register, handleSubmit, formState: {errors}} = useForm({
@@ -41,7 +41,11 @@ function StepThree({formData, handleChange, handlePrevStep})
             CNP: formData.CNP
         })
         .then((response) => {
-            response.status === 200 && sessionStorage.setItem('token', response.data.accessToken);
+            if(response.status === 200)
+            {
+                sessionStorage.setItem('token', response.data.accessToken);
+                navigate('/dashboard');
+            }
         })
         .catch((error) => {
             (error.response.status === 409)? 
