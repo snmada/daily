@@ -3,8 +3,9 @@ const router = express.Router();
 const db = require('../database/database.js');
 const uuid = require('uuid');
 require('dotenv').config();
+const authenticateToken = require('../authenticateToken.js');
 
-router.post('/add', (req, res) => {
+router.post('/add', authenticateToken, (req, res) => {
     db.query(
         'SELECT * FROM patients WHERE CNP = ? AND uuid_doctor = ?', [req.body.CNP, req.body.uuid_doctor],
         (error, result) => {
