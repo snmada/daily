@@ -38,13 +38,19 @@ function Patient()
     });
 
     const onSubmit =  () => {
-        const decoded_token = jwtDecode(sessionStorage.getItem('token'));
+        const token = sessionStorage.getItem('token');
+        const decoded_token = jwtDecode(token);
 
         axios.post('http://localhost:3001/patient/add', {
             uuid_doctor: decoded_token.uuid_doctor, 
             lastname: formData.lastname,
             firstname: formData.firstname,
             CNP: formData.CNP
+        },
+        {
+            headers:{
+                'authorization': `Bearer ${token}`
+            }
         })
         .then((response) => {
             if(response.status === 200)
