@@ -2,6 +2,7 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import SignUp from './pages/SignUp/SignUp.js';
 import SignIn from './pages/SignIn/SignIn.js';
 import Dashboard from './pages/Dashboard/Dashboard.js';
+import Patient from './pages/Patient/Patient.js';
 
 function App() {
     return (
@@ -10,6 +11,7 @@ function App() {
                 <Route exact path='/signup' element={<SignUp/>}/>
                 <Route exact path='/signin' element={<SignIn/>}/>
                 <Route exact path='/dashboard' element={<Dashboard/>}/>
+                <Route exact path='/patients' element={<Patient/>}/>
             </Routes>
         </BrowserRouter>
     );
