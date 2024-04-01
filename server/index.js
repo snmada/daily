@@ -8,8 +8,11 @@ app.use(cors());
 const signupRoute = require('./signup/signup.js');
 app.use('/signup', signupRoute);
 
-const signinRoute = require("./signin/signin.js");
-app.use("/signin", signinRoute);
+const signinRoute = require('./signin/signin.js');
+app.use('/signin', signinRoute);
+
+const patientRoute = require('./patient/patient.js');
+app.use('/patient', patientRoute);
 
 app.listen(3001, (error) => {
     if(error)
