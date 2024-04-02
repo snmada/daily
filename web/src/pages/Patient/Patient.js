@@ -10,7 +10,7 @@ import NavBar from '../../components/NavBar/NavBar.js';
 import SideBar from '../../components/SideBar/SideBar.js';
 import './Patient.scss';
 
-const initialState = {firstname: '', lastname: '', CNP: ''};
+const initialState = {firstname: '', lastname: '', CNP: '', phone: '', address: '', country: ''};
 
 function Patient()
 {
@@ -30,7 +30,11 @@ function Patient()
     const schema = yup.object().shape({
         firstname: yup.string().required('Câmp obligatoriu').matches(/[a-zA-ZăâîșțĂÂÎȘȚ -]+$/, 'Sunt acceptate doar caractere alfabetice'),
         lastname: yup.string().required('Câmp obligatoriu').matches(/[a-zA-ZăâîșțĂÂÎȘȚ -]+$/, 'Sunt acceptate doar caractere alfabetice'),
-        CNP: yup.string().required('Câmp obligatoriu').min(13, 'CNP invalid').max(13, 'CNP invalid')
+        CNP: yup.string().required('Câmp obligatoriu').min(13, 'CNP invalid').max(13, 'CNP invalid'),
+        phone: yup.string().required('Câmp obligatoriu').matches(/^[0-9]+$/, 'Sunt acceptate doar cifre')
+                    .min(10, 'Lungimea maximă este de 10 cifre').max(10, 'Lungimea maximă este de 10 cifre'),
+        address: yup.string().max(45, 'Lungimea maximă este de 45 de caractere'),
+        country: yup.string().max(45, 'Lungimea maximă este de 45 de caractere'),
     });
 
     const {register, handleSubmit, formState: {errors}} = useForm({
@@ -45,7 +49,10 @@ function Patient()
             uuid_doctor: decoded_token.uuid_doctor, 
             lastname: formData.lastname,
             firstname: formData.firstname,
-            CNP: formData.CNP
+            CNP: formData.CNP,
+            phone: formData.phone,
+            address: formData.address,
+            country: formData.country
         },
         {
             headers:{
@@ -121,6 +128,45 @@ function Patient()
                                         fullWidth
                                     />
                                     <Typography className='error'>{errors.CNP?.message}</Typography>
+                                </Grid>
+                                <Grid item xs={12} py={1}>
+                                    <TextField 
+                                        {...register('phone')} 
+                                        value={formData.phone} 
+                                        name='phone' 
+                                        type='text' 
+                                        label='Telefon' 
+                                        variant='outlined' 
+                                        onChange={handleChange} 
+                                        fullWidth
+                                    />
+                                    <Typography className='error'>{errors.phone?.message}</Typography>
+                                </Grid>
+                                <Grid item xs={12} py={1}>
+                                    <TextField 
+                                        {...register('address')} 
+                                        value={formData.address} 
+                                        name='address' 
+                                        type='text' 
+                                        label='Domiciliu' 
+                                        variant='outlined' 
+                                        onChange={handleChange} 
+                                        fullWidth
+                                    />
+                                    <Typography className='error'>{errors.address?.message}</Typography>
+                                </Grid>
+                                <Grid item xs={12} py={1}>
+                                    <TextField 
+                                        {...register('country')} 
+                                        value={formData.country} 
+                                        name='country' 
+                                        type='text' 
+                                        label='Țară' 
+                                        variant='outlined' 
+                                        onChange={handleChange} 
+                                        fullWidth
+                                    />
+                                    <Typography className='error'>{errors.country?.message}</Typography>
                                 </Grid>
                             </Grid>   
                             {errorMessage &&  <Alert severity='error' width={'100%'}>{errorMessage}</Alert>}
