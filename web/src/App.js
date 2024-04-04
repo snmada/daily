@@ -3,6 +3,7 @@ import SignUp from './pages/SignUp/SignUp.js';
 import SignIn from './pages/SignIn/SignIn.js';
 import Dashboard from './pages/Dashboard/Dashboard.js';
 import Patient from './pages/Patient/Patient.js';
+import PatientProfile from './pages/PatientProfile/PatientProfile.js'
 
 function App() {
     return (
@@ -12,6 +13,7 @@ function App() {
                 <Route exact path='/signin' element={<SignIn/>}/>
                 <Route exact path='/dashboard' element={<Dashboard/>}/>
                 <Route exact path='/patients' element={<Patient/>}/>
+                <Route exact path='/patients/:uuid_patient' element={<PatientProfile/>}/>
             </Routes>
         </BrowserRouter>
     );

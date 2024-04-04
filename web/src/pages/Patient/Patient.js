@@ -62,7 +62,7 @@ function Patient()
         .then((response) => {
             if(response.status === 200)
             {
-                navigate(`/patient-profile/${response.data.uuid_patient}`);
+                navigate(`/patients/${response.data.uuid_patient}`);
                 sessionStorage.setItem('uuid_patient', response.data.uuid_patient);
             }
         })
