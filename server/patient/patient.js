@@ -59,7 +59,7 @@ router.post('/add', authenticateToken, (req, res) => {
                     const uuid_patient = uuid.v4();
 
                     db.query(
-                        'INSERT INTO patients (uuid_patient, uuid_doctor, lastname, firstname, CNP, birthdate, age, gender, address, country, phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                        'INSERT INTO patients (uuid_patient, uuid_doctor, lastname, firstname, CNP, birthdate, age, gender, address, country, phone, created_on) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())',
                         [uuid_patient, req.body.uuid_doctor, req.body.lastname, req.body.firstname, 
                             req.body.CNP, birthInfo[0], birthInfo[1], birthInfo[2], req.body.address, req.body.country, req.body.phone],
                         (error, result) => {
