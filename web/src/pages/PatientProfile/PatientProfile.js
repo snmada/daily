@@ -23,6 +23,7 @@ import {jwtDecode} from 'jwt-decode';
 import * as yup from 'yup';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
+import EmailSender from '../../components/EmailSender/EmailSender.js';
 
 
 function PatientProfile()
@@ -351,7 +352,7 @@ function PatientProfile()
                                                 <Box className='box-tab-list'>
                                                     <TabList onChange={handleChangeTabValue}>
                                                         <Tab label='Consultații' value='1'/>
-                                                        <Tab label='Istoric medical' value='2'/>
+                                                        <Tab label='Cod access - Aplicație mobilă' value='2'/>
                                                     </TabList>
                                                 </Box>
                                                 <TabPanel value='1'>
@@ -377,7 +378,9 @@ function PatientProfile()
                                                     </Grid>
                                                 </TabPanel>
                                             
-                                                <TabPanel value='2'>Istoric Medical</TabPanel>
+                                                <TabPanel value='2'>
+                                                    <EmailSender uuid_patient={param.uuid_patient}/>
+                                                </TabPanel>
                                             </TabContext>
                                         </Grid>
                                     </Grid>
