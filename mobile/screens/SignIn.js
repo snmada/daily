@@ -8,61 +8,28 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 import {useNavigation} from '@react-navigation/native';
 
-export default function SignUp()
+export default function SignIn()
 {
     const navigation = useNavigation();
-    
+
     const [showPassword, setShowPassword] = useState(true);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-    const [showConfirmPassword, setShowConfirmPassword] = useState(true);
-    const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
-
     const schema = yup.object().shape({
-        accessCode: yup.string().required('Câmp obligatoriu'),
-        CNP: yup.string().required('Câmp obligatoriu').min(13, 'CNP invalid').max(13, 'CNP invalid'),
-        username: yup.string().required('Câmp obligatoriu').matches(/[a-zA-Z]+$/, 'Sunt acceptate doar caractere alfabetice'),
-        password: yup.string().required('Câmp obligatoriu').min(8, 'Lungimea minimă este de 8 caractere').max(15, 'Lungimea maximă este de 15 caractere'),
-        confirmPassword: yup.string().required('Câmp obligatoriu').oneOf([yup.ref('password'), null], 'Parolele introduse nu coincid')
+        username: yup.string().required('Câmp obligatoriu'),
+        password: yup.string().required('Câmp obligatoriu')
     });
 
     const {control, handleSubmit, formState: {errors}} = useForm({
         resolver: yupResolver(schema),
-        defaultValues: {accessCode: '', CNP: '', username: '', password: '', confirmPassword: ''}
+        defaultValues: {username: '', password: ''}
     });
 
     const onSubmit = (data) => console.log(data);
 
     return(
-        <View style={styles.viewSignUp}>
-            <Text style={styles.textTitle}>Înregistrare pacient</Text>
+        <View style={styles.viewSignIn}>
             <View style={styles.viewForm}>
-                <Controller
-                    control={control}
-                    render={({field: {onChange, value}}) => (
-                        <TextInput 
-                            style={styles.textInput}
-                            placeholder='Cod de acces'
-                            onChangeText={onChange}
-                            value={value}
-                        />
-                    )}
-                    name='accessCode'
-                />
-                {errors.accessCode && <Text style={styles.error}>{errors.accessCode.message}</Text>}
-                <Controller
-                    control={control}
-                    render={({field: {onChange, value}}) => (
-                        <TextInput
-                            style={styles.textInput}
-                            placeholder='CNP (Cod Numeric Personal)'
-                            onChangeText={onChange}
-                            value={value}
-                        />
-                    )}
-                    name='CNP'
-                />
-                {errors.CNP && <Text style={styles.error}>{errors.CNP.message}</Text>}
                 <Controller
                     control={control}
                     render={({field: {onChange, value}}) => (
@@ -95,33 +62,14 @@ export default function SignUp()
                     name='password'
                 />
                 {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
-                <Controller
-                    control={control}
-                    render={({field: {onChange, value}}) => (
-                        <View style={styles.viewPassword}>
-                            <TextInput
-                                style={styles.inputPassword}
-                                placeholder='Confirmare parolă'
-                                onChangeText={onChange}
-                                value={value}
-                                secureTextEntry={showPassword}
-                            />
-                            <TouchableOpacity onPress={handleClickShowConfirmPassword} style={{padding: 10}}>
-                                <FontAwesomeIcon icon={showConfirmPassword? faEye : faEyeSlash} />
-                            </TouchableOpacity>
-                        </View>
-                    )}
-                    name='confirmPassword'
-                />
-                {errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword.message}</Text>}
-                <View style={styles.viewSignInLink}>
-                    <Text>Aveți un cont creat? </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
-                        <Text>Conectați-vă</Text>
+                <View style={styles.viewSignUpLink}>
+                    <Text>Nu aveți un cont creat? </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+                        <Text>Creează acum</Text>
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
-                    <Text style={styles.textButton}>Înregistrare</Text>
+                    <Text style={styles.textButton}>Intră în cont</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -133,7 +81,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         paddingVertical: 30
     },
-    viewSignUp: {
+    viewSignIn: {
         backgroundColor: 'white',
         alignItems: 'center',
         justifyContent: 'center',
@@ -178,7 +126,7 @@ const styles = StyleSheet.create({
         padding: 10,
         fontSize: 16
     },
-    viewSignInLink: {
+    viewSignUpLink: {
         flexDirection: 'row', 
     }
 });
