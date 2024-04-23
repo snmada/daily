@@ -1,12 +1,14 @@
 import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
-import {Text, View, TextInput, TouchableOpacity} from 'react-native';
+import {Text, View, TextInput, TouchableOpacity, Alert} from 'react-native';
 import * as yup from 'yup';
 import {Controller, useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
 import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignIn()
 {
@@ -25,7 +27,22 @@ export default function SignIn()
         defaultValues: {username: '', password: ''}
     });
 
-    const onSubmit = (data) => console.log(data);
+    const onSubmit = (data) => {
+        axios.post(`http://${process.env.IP_ADDRESS}:8082/signin/user-sign-in`, {
+            username: data.username,
+            password: data.password
+        })
+        .then((response) => {
+            if(response.status === 200)
+            {
+                AsyncStorage.setItem('uuid_patient', response.data);
+            }
+        })
+        .catch((error) => {
+            (error.response.status === 404 || error.response.status === 422)? 
+                Alert.alert(error.response.data) : Alert.alert('A intervenit o eroare. Vă rugăm să încercați mai târziu.');
+        });
+    };
 
     return(
         <View style={styles.viewSignIn}>
