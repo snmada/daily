@@ -5,13 +5,15 @@ import * as yup from 'yup';
 import {Controller, useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
+import {faEye, faEyeSlash, faUser, faLock} from '@fortawesome/free-solid-svg-icons';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useFonts, Poppins_500Medium} from '@expo-google-fonts/poppins';
 
 export default function SignIn()
 {
+    const fontLoaded = useFonts({Poppins_500Medium});
     const navigation = useNavigation();
 
     const [showPassword, setShowPassword] = useState(true);
@@ -44,106 +46,149 @@ export default function SignIn()
         });
     };
 
-    return(
-        <View style={styles.viewSignIn}>
-            <View style={styles.viewForm}>
-                <Controller
-                    control={control}
-                    render={({field: {onChange, value}}) => (
-                        <TextInput
-                            style={styles.textInput}
-                            placeholder='Nume utilizator'
-                            onChangeText={onChange}
-                            value={value}
-                        />
-                    )}
-                    name='username'
-                />
-                {errors.username && <Text style={styles.error}>{errors.username.message}</Text>}
-                <Controller
-                    control={control}
-                    render={({field: {onChange, value}}) => (
-                        <View style={styles.viewPassword}>
-                            <TextInput
-                                style={styles.inputPassword}
-                                placeholder='Parolă'
-                                onChangeText={onChange}
-                                value={value}
-                                secureTextEntry={showPassword}
-                            />
-                            <TouchableOpacity onPress={handleClickShowPassword} style={{padding: 10}}>
-                                <FontAwesomeIcon icon={showPassword? faEye : faEyeSlash}/>
-                            </TouchableOpacity>
-                        </View>
-                    )}
-                    name='password'
-                />
-                {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
-                <View style={styles.viewSignUpLink}>
-                    <Text>Nu aveți un cont creat? </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-                        <Text>Creează acum</Text>
+    if(!fontLoaded)
+    {
+        return <View></View>
+    }
+    else
+    {
+        return(
+            <View style={styles.viewSignIn}>
+                <Text style={styles.logo}>DAILY</Text>
+                <View style={styles.viewForm}>
+                    <Controller
+                        control={control}
+                        render={({field: {onChange, value}}) => (
+                            <View style={styles.viewTextInput}>
+                                <FontAwesomeIcon icon={faUser} style={styles.icon} size={15}/>
+                                <TextInput
+                                    style={styles.textInput}
+                                    placeholder='Nume utilizator'
+                                    onChangeText={onChange}
+                                    value={value}
+                                />
+                            </View>
+                        )}
+                        name='username'
+                    />
+                    {errors.username && <Text style={styles.error}>{errors.username.message}</Text>}
+                    <Controller
+                        control={control}
+                        render={({field: {onChange, value}}) => (
+                            <View style={styles.viewTextInput}>
+                                <FontAwesomeIcon icon={faLock} style={styles.icon} size={15}/>
+                                <TextInput
+                                    style={styles.textInput}
+                                    placeholder='Parolă'
+                                    onChangeText={onChange}
+                                    value={value}
+                                    secureTextEntry={showPassword}
+                                />
+                                <TouchableOpacity onPress={handleClickShowPassword} style={{padding: 10}}>
+                                    <FontAwesomeIcon icon={showPassword? faEye : faEyeSlash} style={styles.icon} size={19}/>
+                                </TouchableOpacity>
+                            </View>
+                        )}
+                        name='password'
+                    />
+                    {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
+                    <TouchableOpacity style={styles.buttonSignIn} onPress={handleSubmit(onSubmit)}>
+                        <Text style={styles.textButtonSignIn}>Intră în cont</Text>
+                    </TouchableOpacity>
+                    <View style={styles.viewOR}>
+                        <View style={styles.line}/>
+                            <Text style={styles.textOR}>SAU</Text>
+                        <View style={styles.line}/>
+                    </View>
+                    <TouchableOpacity style={styles.buttonSignUp} onPress={() => navigation.navigate('SignUp')}>
+                        <Text style={styles.textButtonSignUp}>Înregistrează-te</Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
-                    <Text style={styles.textButton}>Intră în cont</Text>
-                </TouchableOpacity>
             </View>
-        </View>
-    );
+        );
+    }
 }
 
 const styles = StyleSheet.create({
-    textTitle: {
-        fontSize: 18,
+    logo: {
+        fontSize: 30,
         paddingVertical: 30
     },
     viewSignIn: {
-        backgroundColor: 'white',
+        backgroundColor: '#FBFBFB',
         alignItems: 'center',
         justifyContent: 'center',
         flex: 1
     },
     viewForm: {
-        gap: 15,
-        width: 300,
+        gap: 10,
+        width: 300
     },
-    textInput: {
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 7,
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-        fontSize: 16
-    },
-    button: {
-        marginTop: 5,
-        height: 45,
-        width: 300,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#8BF5FA'
-    },
-    textButton: {
-        fontSize: 16
-    },
-    error: {
-        color: '#f52a2a',
-        padding: 1
-    },
-    viewPassword: {
+    viewTextInput: {
         flexDirection: 'row', 
         alignItems: 'center', 
         borderRadius: 7, 
         borderWidth: 1,
-        borderColor: 'gray'
+        borderColor: '#DBDFEA',
+        paddingLeft: 10
     },
-    inputPassword: {
+    textInput: {
+        borderRadius: 7,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        fontSize: 16,
         flex: 1, 
         padding: 10,
-        fontSize: 16
+        fontSize: 16,
+        fontFamily: 'Poppins_500Medium'
     },
-    viewSignUpLink: {
-        flexDirection: 'row', 
+    buttonSignIn: {
+        marginTop: 5,
+        height: 50,
+        width: 300,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#FFCF81',
+        borderRadius: 50
+    },
+    textButtonSignIn: {
+        fontSize: 16,
+        fontFamily: 'Poppins_500Medium'
+    },
+    buttonSignUp: {
+        marginTop: 5,
+        height: 50,
+        width: 300,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#BFDCE5',
+        borderRadius: 50
+    },
+    textButtonSignUp: {
+        fontSize: 16,
+        fontFamily: 'Poppins_500Medium'
+    },
+    error: {
+        color: '#f52a2a',
+        fontFamily: 'Poppins_500Medium'
+    },
+    icon: {
+        color: '#9DB2BF'
+    },
+    viewOR: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    line: {
+        flex: 1,
+        height: 1,
+        backgroundColor: '#9DB2BF',
+        marginHorizontal: 5
+    },
+    textOR: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginHorizontal: 10,
+        color: '#9DB2BF'
     }
 });
