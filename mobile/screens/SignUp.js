@@ -5,13 +5,15 @@ import * as yup from 'yup';
 import {Controller, useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faEye, faEyeSlash} from '@fortawesome/free-solid-svg-icons';
+import {faEye, faEyeSlash, faUser, faLock, faAddressCard, faStarOfLife} from '@fortawesome/free-solid-svg-icons';
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useFonts, Poppins_500Medium} from '@expo-google-fonts/poppins';
 
 export default function SignUp()
 {
+    const fontLoaded = useFonts({Poppins_500Medium});
     const navigation = useNavigation();
     
     const [showPassword, setShowPassword] = useState(true);
@@ -52,104 +54,124 @@ export default function SignUp()
         });
     };
 
-    return(
-        <View style={styles.viewSignUp}>
-            <Text style={styles.textTitle}>Înregistrare pacient</Text>
-            <View style={styles.viewForm}>
-                <Controller
-                    control={control}
-                    render={({field: {onChange, value}}) => (
-                        <TextInput 
-                            style={styles.textInput}
-                            placeholder='Cod de acces'
-                            onChangeText={onChange}
-                            value={value}
-                        />
-                    )}
-                    name='accessCode'
-                />
-                {errors.accessCode && <Text style={styles.error}>{errors.accessCode.message}</Text>}
-                <Controller
-                    control={control}
-                    render={({field: {onChange, value}}) => (
-                        <TextInput
-                            style={styles.textInput}
-                            placeholder='CNP (Cod Numeric Personal)'
-                            onChangeText={onChange}
-                            value={value}
-                        />
-                    )}
-                    name='CNP'
-                />
-                {errors.CNP && <Text style={styles.error}>{errors.CNP.message}</Text>}
-                <Controller
-                    control={control}
-                    render={({field: {onChange, value}}) => (
-                        <TextInput
-                            style={styles.textInput}
-                            placeholder='Nume utilizator'
-                            onChangeText={onChange}
-                            value={value}
-                        />
-                    )}
-                    name='username'
-                />
-                {errors.username && <Text style={styles.error}>{errors.username.message}</Text>}
-                <Controller
-                    control={control}
-                    render={({field: {onChange, value}}) => (
-                        <View style={styles.viewPassword}>
-                            <TextInput
-                                style={styles.inputPassword}
-                                placeholder='Parolă'
-                                onChangeText={onChange}
-                                value={value}
-                                secureTextEntry={showPassword}
-                            />
-                            <TouchableOpacity onPress={handleClickShowPassword} style={{padding: 10}}>
-                                <FontAwesomeIcon icon={showPassword? faEye : faEyeSlash}/>
-                            </TouchableOpacity>
-                        </View>
-                    )}
-                    name='password'
-                />
-                {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
-                <Controller
-                    control={control}
-                    render={({field: {onChange, value}}) => (
-                        <View style={styles.viewPassword}>
-                            <TextInput
-                                style={styles.inputPassword}
-                                placeholder='Confirmare parolă'
-                                onChangeText={onChange}
-                                value={value}
-                                secureTextEntry={showPassword}
-                            />
-                            <TouchableOpacity onPress={handleClickShowConfirmPassword} style={{padding: 10}}>
-                                <FontAwesomeIcon icon={showConfirmPassword? faEye : faEyeSlash} />
-                            </TouchableOpacity>
-                        </View>
-                    )}
-                    name='confirmPassword'
-                />
-                {errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword.message}</Text>}
-                <View style={styles.viewSignInLink}>
-                    <Text>Aveți un cont creat? </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
-                        <Text>Conectați-vă</Text>
+    if(!fontLoaded)
+    {
+        return <View></View>
+    }
+    else
+    {
+        return(
+            <View style={styles.viewSignUp}>
+                <Text style={styles.logo}>DAILY</Text>
+                <View style={styles.viewForm}>
+                    <Controller
+                        control={control}
+                        render={({field: {onChange, value}}) => (
+                            <View style={styles.viewTextInput}>
+                                <FontAwesomeIcon icon={faStarOfLife} style={styles.icon} size={15}/>
+                                <TextInput 
+                                    style={styles.textInput}
+                                    placeholder='Cod pacient'
+                                    onChangeText={onChange}
+                                    value={value}
+                                /> 
+                            </View>
+                        )}
+                        name='accessCode'
+                    />
+                    {errors.accessCode && <Text style={styles.error}>{errors.accessCode.message}</Text>}
+                    <Controller
+                        control={control}
+                        render={({field: {onChange, value}}) => (
+                            <View style={styles.viewTextInput}>
+                                <FontAwesomeIcon icon={faAddressCard} style={styles.icon} size={15}/>
+                                <TextInput
+                                    style={styles.textInput}
+                                    placeholder='CNP (Cod Numeric Personal)'
+                                    onChangeText={onChange}
+                                    value={value}
+                                />
+                            </View>
+                        )}
+                        name='CNP'
+                    />
+                    {errors.CNP && <Text style={styles.error}>{errors.CNP.message}</Text>}
+                    <Controller
+                        control={control}
+                        render={({field: {onChange, value}}) => (
+                            <View style={styles.viewTextInput}>
+                                <FontAwesomeIcon icon={faUser} style={styles.icon} size={15}/>
+                                <TextInput
+                                    style={styles.textInput}
+                                    placeholder='Nume utilizator'
+                                    onChangeText={onChange}
+                                    value={value}
+                                />
+                            </View>
+                        )}
+                        name='username'
+                    />
+                    {errors.username && <Text style={styles.error}>{errors.username.message}</Text>}
+                    <Controller
+                        control={control}
+                        render={({field: {onChange, value}}) => (
+                            <View style={styles.viewTextInput}>
+                                <FontAwesomeIcon icon={faLock} style={styles.icon} size={15}/>
+                                <TextInput
+                                    style={styles.textInput}
+                                    placeholder='Parolă'
+                                    onChangeText={onChange}
+                                    value={value}
+                                    secureTextEntry={showPassword}
+                                />
+                                <TouchableOpacity onPress={handleClickShowPassword} style={{padding: 10}}>
+                                    <FontAwesomeIcon icon={showPassword? faEye : faEyeSlash} style={styles.icon} size={19}/>
+                                </TouchableOpacity>
+                            </View>
+                        )}
+                        name='password'
+                    />
+                    {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
+                    <Controller
+                        control={control}
+                        render={({field: {onChange, value}}) => (
+                            <View style={styles.viewTextInput}>
+                                <FontAwesomeIcon icon={faLock} style={styles.icon}/>
+                                <TextInput
+                                    style={styles.textInput}
+                                    placeholder='Confirmare parolă'
+                                    onChangeText={onChange}
+                                    value={value}
+                                    secureTextEntry={showConfirmPassword}
+                                />
+                                <TouchableOpacity onPress={handleClickShowConfirmPassword} style={{padding: 10}}>
+                                    <FontAwesomeIcon icon={showConfirmPassword? faEye : faEyeSlash} style={styles.icon} size={19}/>
+                                </TouchableOpacity>
+                            </View>
+                        )}
+                        name='confirmPassword'
+                    />
+                    {errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword.message}</Text>}
+                    <TouchableOpacity style={styles.buttonSignUp} onPress={handleSubmit(onSubmit)}>
+                        <Text style={styles.textButtonSignUp}>Înregistrează-te</Text>
+                    </TouchableOpacity>
+                    <View style={styles.viewOR}>
+                        <View style={styles.line}/>
+                            <Text style={styles.textOR}>SAU</Text>
+                        <View style={styles.line}/>
+                    </View>
+                    <TouchableOpacity style={styles.buttonSignIn} onPress={() => navigation.navigate('SignIn')}>
+                        <Text style={styles.textButtonSignIn}>Intră în cont</Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
-                    <Text style={styles.textButton}>Înregistrare</Text>
-                </TouchableOpacity>
             </View>
-        </View>
-    );
+        );
+    }
 }
 
 const styles = StyleSheet.create({
-    textTitle: {
-        fontSize: 18,
+    logo: {
+        fontSize: 30,
         paddingVertical: 30
     },
     viewSignUp: {
@@ -159,45 +181,74 @@ const styles = StyleSheet.create({
         flex: 1
     },
     viewForm: {
-        gap: 15,
-        width: 300,
+        gap: 10,
+        width: 300
+    },
+    viewTextInput: {
+        flexDirection: 'row', 
+        alignItems: 'center', 
+        borderRadius: 10, 
+        borderWidth: 1,
+        borderColor: '#DBDFEA',
+        paddingLeft: 10
     },
     textInput: {
-        borderWidth: 1,
-        borderColor: 'gray',
         borderRadius: 7,
         paddingHorizontal: 10,
         paddingVertical: 10,
-        fontSize: 16
+        fontSize: 16,
+        flex: 1, 
+        padding: 10,
+        fontSize: 16,
+        fontFamily: 'Poppins_500Medium'
     },
-    button: {
+    buttonSignUp: {
         marginTop: 5,
-        height: 45,
+        height: 50,
         width: 300,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#8BF5FA'
+        backgroundColor: '#FFCF81',
+        borderRadius: 50
     },
-    textButton: {
-        fontSize: 16
+    textButtonSignUp: {
+        fontSize: 16,
+        fontFamily: 'Poppins_500Medium'
+    },
+    buttonSignIn: {
+        marginTop: 5,
+        height: 50,
+        width: 300,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#BFDCE5',
+        borderRadius: 50
+    },
+    textButtonSignIn: {
+        fontSize: 16,
+        fontFamily: 'Poppins_500Medium'
     },
     error: {
         color: '#f52a2a',
-        padding: 1
+        fontFamily: 'Poppins_500Medium'
     },
-    viewPassword: {
-        flexDirection: 'row', 
-        alignItems: 'center', 
-        borderRadius: 7, 
-        borderWidth: 1,
-        borderColor: 'gray'
+    icon: {
+        color: '#9DB2BF'
     },
-    inputPassword: {
-        flex: 1, 
-        padding: 10,
-        fontSize: 16
+    viewOR: {
+        flexDirection: 'row',
+        alignItems: 'center'
     },
-    viewSignInLink: {
-        flexDirection: 'row', 
+    line: {
+        flex: 1,
+        height: 1,
+        backgroundColor: '#9DB2BF',
+        marginHorizontal: 5
+    },
+    textOR: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginHorizontal: 10,
+        color: '#9DB2BF'
     }
 });
