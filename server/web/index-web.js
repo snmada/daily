@@ -20,4 +20,7 @@ app.use('/patient-profile', patientProfileRoute);
 const emailSenderRoute = require('./email-sender/email-sender.js');
 app.use('/email-sender', emailSenderRoute);
 
+const patientSkinDataRoute = require('./patient-skin-data/patient-skin-data.js');
+app.use('/patient-skin-data', patientSkinDataRoute);
+
 module.exports = app;

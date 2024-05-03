@@ -1,0 +1,47 @@
+.skin-data{
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    background-image: linear-gradient(to left top, #cbdcc9, #cce3d5, #d0e8e1, #d7eeec, #dff3f5, #dff2f7, #e0f1f8, #e2eff9, #dce8f4, #d6e0f0, #d2d9eb, #ced1e5);
+
+    .main-content{
+        flex: 1;
+        min-height: 100vh;
+        margin: 0px 25px;
+
+        .grid-item-path{
+            padding: 18px 0px;
+            display: flex;
+            align-items: center;
+
+            .path{
+                font-size: 17px;
+                padding-right: 15px;
+
+                .arrow-icon{
+                    font-size: 15px;
+                }
+            }
+        }
+
+        .grid-container{
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .paper{
+                width: 100%;
+                padding: 30px;
+
+                .grid-title{
+                    background: #F5EFE6;
+                }
+
+                .title{
+                    font-size: 18px;
+                }
+            }
+        }
+    }
+}

@@ -3,7 +3,8 @@ import SignUp from './pages/SignUp/SignUp.js';
 import SignIn from './pages/SignIn/SignIn.js';
 import Dashboard from './pages/Dashboard/Dashboard.js';
 import Patient from './pages/Patient/Patient.js';
-import PatientProfile from './pages/PatientProfile/PatientProfile.js'
+import PatientProfile from './pages/PatientProfile/PatientProfile.js';
+import PatientSkinData from './pages/PatientSkinData/PatientSkinData.js';
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
                 <Route exact path='/dashboard' element={<Dashboard/>}/>
                 <Route exact path='/patients' element={<Patient/>}/>
                 <Route exact path='/patients/:uuid_patient' element={<PatientProfile/>}/>
+                <Route exact path='/skin-data/:uuid_patient' element={<PatientSkinData/>}/>
             </Routes>
         </BrowserRouter>
     );
