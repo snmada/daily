@@ -4,6 +4,7 @@ const db = require('../../database/database.js');
 const uuid = require('uuid');
 require('dotenv').config();
 const authenticateToken = require('../authenticateToken.js');
+const jwt = require('jsonwebtoken');
 
 function getBirthInfo(CNP) 
 {
@@ -71,7 +72,8 @@ router.post('/add', authenticateToken, (req, res) => {
                             {
                                 if(result.affectedRows)
                                 {
-                                    res.status(200).send({uuid_patient: uuid_patient});
+                                    const token_patient = jwt.sign({firstname: req.body.firstname, lastname: req.body.lastname}, process.env.SECRET_JWT);
+                                    res.status(200).send({uuid_patient, token_patient});
                                 }
                             }
                         }

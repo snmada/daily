@@ -1,0 +1,73 @@
+.div-patient-info{
+    margin-right: 20px;
+    height: 100%;
+
+    .container-patient-info{
+        padding: 18px 0px;
+        border-radius: 30px;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.555);
+
+        .patient-info-first-grid{
+            padding: 0px 8px;
+            text-align: center;
+            border-right: 1px solid gray;
+
+            .name{
+                font-size: 20px;
+            }
+
+            .cnp{
+                font-size: 18px;
+            }
+
+            .phone,
+            .address{
+                font-size: 15px;
+                color: gray;
+
+                &.phone{
+                    padding-top: 18px;
+                }
+
+                &.address{
+                    padding-bottom: 24px;
+                }
+            }
+
+            .address{
+                font-size: 15px;
+                color: gray;
+                padding-bottom: 24px;
+            }
+
+            .phone-icon,
+            .place-icon{
+                font-size: 15px;
+            }
+
+            .box{
+                text-align: center;
+                padding: 16px;
+            }
+
+            .event-icon,
+            .check-icon{
+                font-size: 2rem;
+                margin-bottom: 1;
+            }
+
+            .typography{
+                font-size: 15px;
+            }
+        }
+
+        .patient-info-second-grid{
+            .grid-button{
+                display: flex;
+                justify-content: flex-end;
+                padding-right: 15px;
+            }
+        }
+    }
+}

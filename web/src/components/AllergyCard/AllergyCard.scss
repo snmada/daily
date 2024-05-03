@@ -1,0 +1,50 @@
+.container-allergies{
+    height: 100%;
+    background: rgba(255, 255, 255, 0.555);
+    border-radius: 30px;
+    padding: 18px;
+
+    .title{
+        font-size: 18px;
+        padding-bottom: 15px;
+    }
+
+    .allergies-box{
+        height: 200px;
+        overflow-y: auto;
+
+        .allergy-item{
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid gray;
+
+            .delete-icon{
+                visibility: hidden;
+            }
+
+            &:hover{
+                cursor: pointer;
+
+                .delete-icon{
+                    visibility: visible;
+                }
+            }
+        }
+    }
+
+    .edit-box{
+        display: flex;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    .add-button{
+        color: rgb(102, 102, 102);
+        background-color: transparent;
+        margin-top: 10px;
+
+        &:hover{
+            background: transparent;
+        }
+    }
+}

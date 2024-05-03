@@ -7,6 +7,7 @@ import {ArrowForwardIos as ArrowForwardIosIcon} from '@mui/icons-material';
 import axios from 'axios';
 import {useParams, useNavigate} from 'react-router-dom';
 import CustomAlert from '../../components/CustomAlert/CustomAlert.js';
+import {jwtDecode} from 'jwt-decode';
 
 const initialState = {phototype: '', skin_type: '', acne_type: '', acne_description: '', acne_localization: '', acne_severity: '', acne_history: '', treatment_history: '', observations: ''};
 
@@ -17,13 +18,13 @@ function PatientSkinData()
     const [formData, setFormData] = useState(initialState);
     const handleChange = (event) => setFormData({...formData, [event.target.name]: event.target.value});
     const token = sessionStorage.getItem('token');
-
     const [patient, setPatient] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [addMode, setAddMode] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const [alert, setAlert] = useState(null);
+    const decoded_token_patient = jwtDecode(sessionStorage.getItem('token_patient'));
 
     useEffect(() => {
         if(alert) 
@@ -190,7 +191,7 @@ function PatientSkinData()
                         <NavBar title='Skin Data'/>
                         <Grid item xs={12} className='grid-item-path'>
                             <Typography className='path'>
-                                Pacienți <ArrowForwardIosIcon className='arrow-icon'/>{patient.lastname.toUpperCase()} {patient.firstname}
+                                Pacienți <ArrowForwardIosIcon className='arrow-icon'/>{decoded_token_patient.lastname.toUpperCase()} {decoded_token_patient.firstname}
                             </Typography>
                             {addMode && <Button variant='contained' onClick={() => {addSkinData()}}>Salvează</Button>}
                                 
