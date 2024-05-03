@@ -18,7 +18,7 @@ import {
     ContentPaste as ContentPasteIcon
 } from '@mui/icons-material';
 import axios from 'axios';
-import {useParams} from 'react-router-dom';
+import {useParams, useNavigate} from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
 import * as yup from 'yup';
 import {useForm} from 'react-hook-form';
@@ -28,6 +28,7 @@ import EmailSender from '../../components/EmailSender/EmailSender.js';
 
 function PatientProfile()
 {
+    const navigate = useNavigate();
     const [errorMessage, setErrorMessage] = useState('');
     const [open, setOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -222,6 +223,7 @@ function PatientProfile()
                             <Typography className='path'>
                                 Pacienți <ArrowForwardIosIcon className='arrow-icon'/>{patientInfo.lastname.toUpperCase()} {patientInfo.firstname}
                             </Typography>
+                            <Button variant='contained' onClick={() => navigate(`/skin-data/${param.uuid_patient}`)}>Fișă pacient</Button>
                         </Grid>
                         <Grid container>
                             <Grid item xs={5}>

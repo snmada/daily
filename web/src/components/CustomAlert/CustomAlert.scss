@@ -1,0 +1,18 @@
+.container{
+    position: relative;
+    min-height: 100vh;
+
+    .overlay{
+        position: fixed;
+        top: 0;
+        right: 0;
+        z-index: 9999;
+        padding: 0 20px;
+
+        .alert{
+            width: 400px;
+            background: #153448;
+            color: white;
+        }
+    }
+}
