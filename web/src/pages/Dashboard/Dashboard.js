@@ -15,15 +15,18 @@ import ContentPasteIcon from '@mui/icons-material/ContentPaste';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import {PieChart} from '@mui/x-charts/PieChart';
 import {BarChart} from '@mui/x-charts/BarChart';
+import axios from 'axios';
 
 function Dashboard()
 {
+    const token = sessionStorage.getItem('token');
+    const decodedToken = jwtDecode(sessionStorage.getItem('token'));
     const [name, setName] = useState('');
     const [currentTime, setCurrentTime] = useState(new Date().getHours());
     const [greeting, setGreeting] = useState('');
+    const [data, setData] = useState({});
 
     useEffect(() => {
-        const decodedToken = jwtDecode(sessionStorage.getItem('token'));
         setName(decodedToken.firstname + ' ' + decodedToken.lastname);
     }, []);
 
@@ -58,26 +61,48 @@ function Dashboard()
 
     const dataset = [
         {
-            female: 20,
-            male: 30,
+            female: data.totalFRosacea,
+            male: data.totalMRosacea,
             acne_type: 'Rozacee'
         },
         {
-            female: 20,
-            male: 30,
+            female: data.totalFVulgaris,
+            male: data.totalMVulgaris,
             acne_type: 'Vulgară'
         },
         {
-            female: 20,
-            male: 30,
+            female: data.totalFJuvenile,
+            male: data.totalMJuvenile,
             acne_type: 'Juvenilă'
         },
         {
-            female: 20,
-            male: 30,
+            female: data.totalFCystic,
+            male: data.totalMCystic,
             acne_type: 'Chistică'
         }
     ];
+
+    useEffect(() => {
+        fetchData();
+    }, [])
+
+    const fetchData = () => {
+        axios.get(`http://localhost:3001/dashboard/data/${decodedToken.uuid_doctor}`,
+        {
+            headers:{
+                'authorization': `Bearer ${token}`
+            }
+        })
+        .then((response) => {
+            if(response.status === 200)
+            {
+                setData(response.data);
+            }
+        })
+        .catch((error) => {
+            (error.response.status === 500) && alert('A intervenit o eroare. Vă rugăm să încercați mai târziu.');
+        });
+    }
 
     return(
         <Grid container className='dashboard'>
@@ -108,7 +133,7 @@ function Dashboard()
                                             <Groups2Icon className='icon'/>
                                         </Grid>
                                         <Grid item xs={12}><h2>Pacienți</h2></Grid>
-                                        <Grid item xs={12}><h1>250</h1></Grid> 
+                                        <Grid item xs={12}><h1>{data.totalPatients}</h1></Grid> 
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -136,7 +161,7 @@ function Dashboard()
                                             <AccessibilityNewIcon className='icon'/>
                                         </Grid>
                                         <Grid item xs={12}><h2>Vârsta medie</h2></Grid>
-                                        <Grid item xs={12}><h1>23</h1></Grid>
+                                        <Grid item xs={12}><h1>{data.averageAge}</h1></Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -147,8 +172,8 @@ function Dashboard()
                                         <PieChart
                                             series={[
                                                 {data: [
-                                                    {id: 0, value: 10, label: 'Feminin', color: '#E1AFD1'},
-                                                    {id: 1, value: 15, label: 'Masculin', color: '#6AD4DD'}]
+                                                    {id: 0, value: data.totalFemale, label: 'Feminin', color: '#E1AFD1'},
+                                                    {id: 1, value: data.totalMale, label: 'Masculin', color: '#6AD4DD'}]
                                                 }
                                             ]}
                                             width={400}
@@ -160,8 +185,10 @@ function Dashboard()
                                         <PieChart
                                             series={[
                                                 {data: [
-                                                    {id: 0, value: 10, label: 'Feminin', color: '#E1AFD1'},
-                                                    {id: 1, value: 15, label: 'Masculin', color: '#6AD4DD'}]
+                                                    {id: 0, value: data.totalRosacea, label: 'Rozacee', color: '#D2E0FB'},
+                                                    {id: 1, value: data.totalVulgaris, label: 'Vulgară', color: '#FFDBAA'},
+                                                    {id: 2, value: data.totalJuvenile, label: 'Juvenilă', color: '#B0D9B1'},
+                                                    {id: 3, value: data.totalCystic, label: 'Chistică', color: '#8EACCD'}]
                                                 }
                                             ]}
                                             width={400}
