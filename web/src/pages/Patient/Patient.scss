@@ -1,12 +1,37 @@
 .patient{
     width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
+    background-image: linear-gradient(to left, #bfdce5, #cce1eb, #d9e6f0, #e6ecf4, #f0f2f7, #f0f2f7, #f0f2f7, #f0f2f7, #e6ecf4, #d9e6f0, #cce1eb, #bfdce5);
 
     .main-content{
         flex: 1;
-        height: 100vh;
-        overflow-y: auto;
+        min-height: 100vh;
         margin: 0px 25px;
+        overflow: auto;
+
+        .grid-container{
+            margin-top: 10px;
+            border-radius: 30px; 
+            background-color: rgb(255, 255, 255); 
+            padding: 20px;  
+            height: 650px;
+
+            .box{
+                height: 550px;
+                width: 100%;
+
+                .header{
+                    background-color: #DEECFC;
+                }
+            }
+            
+            .button{
+                color: #191919;
+                background-color: #FFCF81;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+        }
     }
 }

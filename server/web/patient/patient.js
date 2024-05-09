@@ -84,4 +84,25 @@ router.post('/add', authenticateToken, (req, res) => {
     );
 });
 
+router.get('/data/:id', authenticateToken, (req, res) => {
+    db.query(
+        `SELECT ROW_NUMBER() OVER(ORDER BY uuid_patient) as id, uuid_patient, lastname, firstname, CNP, 
+        DATE_FORMAT(birthdate, '%d-%m-%Y') as birthdate, age, phone FROM patients WHERE uuid_doctor = ?`, 
+        req.params.id,
+        (error, result) => {
+            if(error)
+            {
+                res.status(500).send();
+            }
+            else
+            {
+                if(result.length)
+                {
+                    res.status(200).send(result);
+                }
+            }
+        }
+    );
+});
+
 module.exports = router;
