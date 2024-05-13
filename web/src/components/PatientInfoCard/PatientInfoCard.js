@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import './PatientInfoCard.scss';
-import {Grid, Typography, Button, Box, IconButton, TextField, LinearProgress,  Dialog, Alert, AppBar, Toolbar} from '@mui/material';
+import {Grid, Typography, Button, Box, IconButton, TextField, LinearProgress,  Dialog, Alert, AppBar, Toolbar, Tooltip} from '@mui/material';
 import axios from 'axios';
-import {useParams} from 'react-router-dom';
+import {useParams, useNavigate} from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
 import * as yup from 'yup';
 import {useForm} from 'react-hook-form';
@@ -11,12 +11,10 @@ import {
     ModeEditOutline as ModeEditOutlineIcon,
     Phone as PhoneIcon,
     Place as PlaceIcon,
-    Event as EventIcon,
-    ChecklistRtl as ChecklistRtlIcon,
-    Close as CloseIcon
+    Event as EventIcon
 } from '@mui/icons-material';
 
-function PatientInfoCard()
+function PatientInfoCard({alert, setAlert})
 {
     const [patientInfo, setPatientInfo] = useState({});
     const [initialCNP, setInitialCNP] = useState('');
@@ -27,9 +25,12 @@ function PatientInfoCard()
     const decoded_token = jwtDecode(token);
     const param = useParams();
     const handleChange = (event) => setPatientInfo({...patientInfo,  [event.target.name]: event.target.value});
+    const [existRecord, setExistRecord] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchPatientInfo();
+        fetchSkinRecord();
     }, []);
 
     useEffect(() => {
@@ -37,30 +38,66 @@ function PatientInfoCard()
     }, [open]);
 
     const handleOpen = () => {
+        setInitialCNP(patientInfo.CNP);
         setOpen(true);
         fetchPatientInfo();
+        reset();
     }
 
     const handleClose = () => {
         setOpen(false);
         fetchPatientInfo();
+        setErrorMessage('');
+        reset();
     }
+
+    useEffect(() => {
+        if(alert) 
+        {
+            setTimeout(() => {
+                setAlert(null); 
+            }, 5000); 
+        }
+    }, [alert]);
 
     const schema = yup.object().shape({
         firstname: yup.string().required('Câmp obligatoriu').matches(/[a-zA-ZăâîșțĂÂÎȘȚ -]+$/, 'Sunt acceptate doar caractere alfabetice'),
         lastname: yup.string().required('Câmp obligatoriu').matches(/[a-zA-ZăâîșțĂÂÎȘȚ -]+$/, 'Sunt acceptate doar caractere alfabetice'),
         CNP: yup.string().required('Câmp obligatoriu').min(13, 'CNP invalid').max(13, 'CNP invalid'),
         phone: yup.string().required('Câmp obligatoriu').matches(/^[0-9]+$/, 'Sunt acceptate doar cifre')
-                    .min(10, 'Lungimea maximă este de 10 cifre').max(10, 'Lungimea maximă este de 10 cifre'),
+                  .min(10, 'Lungimea maximă este de 10 cifre').max(10, 'Lungimea maximă este de 10 cifre'),
         address: yup.string().max(45, 'Lungimea maximă este de 45 de caractere'),
-        country: yup.string().max(45, 'Lungimea maximă este de 45 de caractere')
+        country: yup.string().ensure()
+                    .when('address', {
+                        is: (address) => address && address.trim().length > 0,
+                        then: () => yup.string().required('Câmp obligatoriu')
+                    })
+                    .max(45, 'Lungimea maximă este de 45 de caractere'),
+        weight: yup.number('Greutatea trebuie să fie un număr')
+                   .typeError('Câmp obligatoriu')
+                   .test('valid-weight', 'Greutatea trebuie să fie între 30 și 250 kg', function(value){
+                        if(value === 0 || (value > 30 && value < 250)) 
+                        {
+                            return true;
+                        }
+                        return false;
+                    }),
+        height: yup.number('Înălțimea trebuie să fie un număr')
+                    .typeError('Câmp obligatoriu')
+                    .test('valid-height', 'Înălțimea trebuie să fie între 30 și 250 cm', function(value){
+                        if(value === 0 || (value > 30 && value < 250)) 
+                        {
+                            return true;
+                        }
+                        return false;
+                    })          
     });
 
-    const {register, handleSubmit, formState: {errors}} = useForm({
+    const {register, handleSubmit, reset, formState: {errors}} = useForm({
         resolver: yupResolver(schema)
     });
 
-    const onSubmit =  () => {
+    const onSubmit = () => {
         axios.put('http://localhost:3001/patient-profile/update-info', {
             uuid_patient: param.uuid_patient,
             uuid_doctor: decoded_token.uuid_doctor, 
@@ -80,16 +117,31 @@ function PatientInfoCard()
             }
         })
         .then((response) => {
-            if(response.status === 200)
+            if(response.status === 200) 
             {
-                alert(response.data);
+                setAlert({
+                    severity: 'success',
+                    text: 'Datele au fost actualizate cu success'
+                });
+                handleClose(true);
             }
         })
         .catch((error) => {
-            (error.response.status === 409)? 
-                setErrorMessage(error.response.data) : alert('A intervenit o eroare. Vă rugăm să încercați mai târziu.');
+            if(error.response.status === 409)
+            {
+                setErrorMessage(error.response.data);
+            }
+            else
+            {
+                setAlert({
+                    severity: 'error',
+                    text: 'A intervenit o eroare. Vă rugăm să încercați mai târziu.'
+                });
+                handleClose(true);
+            }
         });
     };
+    
 
     const fetchPatientInfo = () => {
         axios.get(`http://localhost:3001/patient-profile/patient-info/${param.uuid_patient}`,
@@ -106,8 +158,39 @@ function PatientInfoCard()
             }
         })
         .catch((error) => {
-            (error.response.status === 500) && alert('A intervenit o eroare. Vă rugăm să încercați mai târziu.');
+            setAlert({
+                severity: 'error',
+                text: 'A intervenit o eroare. Vă rugăm să încercați mai târziu.'
+            });
             setIsLoading(false);
+        });
+    }
+
+    const fetchSkinRecord = () => {
+        axios.get(`http://localhost:3001/patient-skin-data/data/${param.uuid_patient}`,
+        {
+            headers:{
+                'authorization': `Bearer ${token}`
+            }
+        })
+        .then((response) => {
+            if(response.status === 200)
+            {
+                setExistRecord(true);
+            }
+        })
+        .catch((error) => {
+            if(error.response.status === 404)
+            {
+                setExistRecord(false);
+            }
+            else
+            {
+                setAlert({
+                    severity: 'error',
+                    text: 'A intervenit o eroare. Vă rugăm să încercați mai târziu.'
+                });
+            }
         });
     }
 
@@ -126,31 +209,37 @@ function PatientInfoCard()
                 <div className='div-patient-info'>
                     <Grid container className='container-patient-info'>
                         <Grid item xs={7} className='patient-info-first-grid'>
-                            <Typography className='name'>{patientInfo.lastname} {patientInfo.firstname}</Typography>
+                            <Typography className='name'>{patientInfo.lastname.toUpperCase()} {patientInfo.firstname}</Typography>
                             <Typography className='cnp'>{patientInfo.CNP}</Typography>
                             <Typography className='phone'><PhoneIcon className='phone-icon'/> {patientInfo.phone}</Typography>
-                            <Typography className='address'><PlaceIcon className='place-icon'/> {patientInfo.address}, {patientInfo.country}</Typography>
-                        
-                            <Grid container >
-                                <Grid item xs={6}>
+                            {
+                                (patientInfo.address !== '' && patientInfo.country !== '') && 
+                                <Typography className='address'><PlaceIcon className='place-icon'/> {patientInfo.address}, {patientInfo.country}</Typography>
+                            }
+                            {
+                                (patientInfo.address == '' && patientInfo.country !== '') && 
+                                <Typography className='address'><PlaceIcon className='place-icon'/> {patientInfo.country}</Typography>
+                            }
+                            <Grid container pt={2}>
+                                <Grid item xs={12}>
                                     <Box className='box'>
                                         <EventIcon className='event-icon'/>
-                                        <Typography className='typography'>Prima consultație</Typography>
-                                        <Typography className='typography'>25 Oct. 2021</Typography>
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Box className='box'>
-                                        <ChecklistRtlIcon className='check-icon'/>
-                                        <Typography className='typography'>Consultații</Typography>
-                                        <Typography className='typography'>10</Typography>
+                                        <Typography className='typography'>Prima vizită</Typography>
+                                        <Typography className='typography' mb={1}>{patientInfo.created_on}</Typography>
+                                        {existRecord? (
+                                            <Button  variant='outlined' onClick={() => navigate(`/skin-data/${param.uuid_patient}`)}>VEZI FIȘA DE EVALUARE</Button>
+                                        ):(<Button className='add-button' variant='contained' onClick={() => navigate(`/skin-data/${param.uuid_patient}`)}>ADAUGĂ FIȘA DE EVALUARE</Button>)}
                                     </Box>
                                 </Grid>
                             </Grid>
                         </Grid>
                         <Grid item xs={5} className='patient-info-second-grid'>
                             <Grid item xs={12} className='grid-button'>
-                                <IconButton onClick={handleOpen}><ModeEditOutlineIcon/></IconButton>
+                                <Tooltip title={<h2>Editează datele pacientului</h2>}>
+                                    <IconButton onClick={handleOpen}>
+                                        <ModeEditOutlineIcon/>
+                                    </IconButton>
+                                </Tooltip>
                             </Grid>
                                     
                             <Grid item xs={12} px={3} py={5}> 
@@ -189,21 +278,23 @@ function PatientInfoCard()
                     </Grid>
                 </div>
 
-                <Dialog fullScreen open={open} onClose={handleClose}>
-                    <AppBar sx={{position: 'relative'}}>
+                <Dialog fullScreen open={open} onClose={handleClose} className='dialog-edit'>
+                    <AppBar className='appbar'>
                         <Toolbar>
-                            <IconButton onClick={handleClose}><CloseIcon /></IconButton>
-                            <Typography sx={{ml: 2, flex: 1}} variant='h6' component='div'>
-                                Editare Date Pacient
-                            </Typography>
-                            <Button autoFocus color='inherit' type='submit' onClick={onSubmit}>Salvează</Button>
+                            <Button className='save-button' type='submit' form='form' variant='contained'>Salvează</Button>
+                            <Button className='cancel-button' variant='outlined' onClick={handleClose}>Anulează</Button>
                         </Toolbar>
                     </AppBar>
 
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        <Grid container sx={{justifyContent: 'center', pt: 10}}>
-                            <Grid container sx={{width: '500px'}}>
-                                <Grid item xs={12} py={1}>
+                    <form onSubmit={handleSubmit(onSubmit)} id='form' noValidate>
+                        <Grid container className='grid-container' pt={10}>
+                            <Grid container className='grid-form'>
+                                <Grid item xs={12} pb={5}>
+                                    <Typography className='title'>
+                                        Formular pentru actualizarea datelor pacientului
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6} py={1}>
                                     <TextField 
                                         {...register('lastname')} 
                                         value={patientInfo.lastname}
@@ -216,7 +307,7 @@ function PatientInfoCard()
                                     />
                                     <Typography className='error'>{errors.lastname?.message}</Typography>
                                 </Grid>
-                                <Grid item xs={12} py={1}>
+                                <Grid item xs={6} py={1} pl={1}>
                                     <TextField 
                                         {...register('firstname')} 
                                         value={patientInfo.firstname} 
@@ -256,7 +347,7 @@ function PatientInfoCard()
                                     />
                                     <Typography className='error'>{errors.phone?.message}</Typography>
                                 </Grid>
-                                <Grid item xs={12} py={1}>
+                                <Grid item xs={7} py={1}>
                                     <TextField 
                                         {...register('address')} 
                                         value={patientInfo.address} 
@@ -269,7 +360,7 @@ function PatientInfoCard()
                                     />
                                     <Typography className='error'>{errors.address?.message}</Typography>
                                 </Grid>
-                                <Grid item xs={12} py={1}>
+                                <Grid item xs={5} py={1} pl={1}>
                                     <TextField 
                                         {...register('country')} 
                                         value={patientInfo.country} 
@@ -284,36 +375,42 @@ function PatientInfoCard()
                                 </Grid>
                                 <Grid item xs={12} sm={6} py={1}>
                                     <TextField
+                                        {...register('weight')} 
                                         label='Greutate (kg)'
                                         type='number'
                                         name='weight'
                                         value={patientInfo.weight}
-                                        sx={{paddingBottom: 2, width: '100%'}}
+                                        sx={{width: '100%'}}
                                         InputProps={{
                                             inputProps: {
-                                                min: 30, max: 250, step: 1
+                                                min: 30, max: 250, step: 1,
+                                                title: 'Greutatea trebuie să fie cuprinsă între 30 și 250 kg'
                                             }
                                         }}
                                         onChange={handleChange}
                                     />
+                                    <Typography className='error'>{errors.weight?.message}</Typography>
                                 </Grid>
                                 <Grid item xs={12} sm={6} py={1} pl={1}>
                                     <TextField
+                                        {...register('height')} 
                                         label='Înălțime (cm)'
                                         type='number'
                                         name='height'
                                         value={patientInfo.height}
-                                        sx={{paddingBottom: 2, width: '100%'}}
+                                        sx={{width: '100%'}}
                                         InputProps={{
                                             inputProps: {
-                                                min: 30, max: 250, step: 1
+                                                min: 30, max: 250, step: 1,
+                                                title: 'Înălțimea trebuie să fie cuprinsă între 30 și 250 cm'
                                             }
                                         }}
                                         onChange={handleChange}
                                     />
+                                    <Typography className='error'>{errors.height?.message}</Typography>
                                 </Grid>
                             </Grid>
-                        </Grid>   
+                        </Grid> 
                     </form>
                 </Dialog>
                 </>

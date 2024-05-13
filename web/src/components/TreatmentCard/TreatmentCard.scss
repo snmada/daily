@@ -6,11 +6,12 @@
         border-radius: 30px;
         padding: 18px;
         height: 100%;
-        background: rgba(255, 255, 255, 0.555);
+        background: rgb(255, 255, 255);
 
         .title-box{
             width: 100%;
             padding-bottom: 5px;
+            display: flex;
 
             .title{
                 font-size: 18px;
@@ -18,7 +19,7 @@
         }
 
         .diagnosis-box{
-            border-left: 3px solid #559c90;
+            border-left: 3px solid #BFDCE5;
             margin: 10px 0px;
             .diagnosis{
                 padding-left: 10px;
@@ -30,9 +31,100 @@
             border-radius: 10px;
             height: 200px;
             overflow-y: auto;
-            background-color: #cdf0ea80;
+            background-color: #e3f6fe;
             padding: 16px;
             width: 100%;
+
+            .no-data-box{
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                justify-content: center;
+                height: 100%;
+
+                .add-icon-button{
+                    background-color: #FFCF81;
+                    :hover{
+                        background-color: #FFCF81;
+                    }
+                }
+            }
+
+            ul{
+                margin-left: 30px;
+            }
+        }
+    }
+    
+}
+
+.dialog-treatment{
+    .dialog-content{
+        padding: 30px 30px 0px 30px;
+
+        .dialog-content-text{
+            width: 100%;
+            background-color: #ffffff;
+            padding-bottom: 15px;
+            padding-top: 20px;
+            
+            .grid{
+                background-color: #ffffff;
+        
+                .add-table-treatment{
+                    width: 100%;
+        
+                    .index{
+                        border: none;
+                        padding: 10px;
+                        text-align: center;
+                    }
+                }
+        
+                .view-table-treatment{
+                    width: 100%;
+                
+                    th, td{
+                        border: 1px solid #9CAFAA;
+                        padding: 10px;
+                    }
+        
+                    .index{
+                        text-align: center;
+                    }
+                }
+            }
+        }
+
+        .icon-button{
+            background-color: #FFCF81;
+            margin-left: 7px;
+            
+            :hover{
+             background-color: #FFCF81;
+            }
+         }
+    }
+
+    .dialog-actions{
+        padding: 20px 30px 30px 30px;
+
+        .save-button{
+            margin-left: auto;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    
+        .cancel-button{
+            color: #F52A2A;
+            margin-left: 10px;
+            border-color: #F52A2A;
+            :hover{
+                background-color: #FBFBFB;
+                border-color: #F52A2A;
+            }
         }
     }
 }

@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import Alert from '@mui/material/Alert';
-import CheckIcon from '@mui/icons-material/Check';
 import './CustomAlert.scss';
 
 function CustomAlert({severity, text})
@@ -18,11 +17,17 @@ function CustomAlert({severity, text})
     return(
         <div className='container'>
             <div className='overlay'>
-                {
-                    open && (
-                        <Alert icon={<CheckIcon fontSize='inherit'/>} severity={severity} className='alert'>{text}</Alert>
-                    )
-                }
+                {open && severity === 'success' && (
+                    <Alert variant='filled' severity={severity} className='alert-success'>
+                        {text}
+                    </Alert>
+                )}
+
+                {open && severity === 'error' && (
+                    <Alert variant='filled' severity={severity} className='alert-error'>
+                        {text}
+                    </Alert>
+                )}
             </div>
         </div>
     );

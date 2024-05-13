@@ -5,14 +5,27 @@
     .overlay{
         position: fixed;
         top: 0;
-        right: 0;
+        left: 50%;
+        transform: translateX(-50%);
         z-index: 9999;
         padding: 0 20px;
 
-        .alert{
-            width: 400px;
-            background: #153448;
-            color: white;
+        .alert-success{
+            width: max-content;
+            padding: 20px 40px;
+            font-size: 17px;
+            text-align: center;
+            background-color: #bcdfac;
+            color: #156112;
+        }
+
+        .alert-error{
+            width: max-content;
+            padding: 20px 40px;
+            font-size: 17px;
+            text-align: center;
+            background-color: #db5252;
+            color: #ffffff;
         }
     }
 }
