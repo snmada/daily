@@ -39,7 +39,22 @@ function getBirthInfo(CNP)
 
 router.get('/patient-info/:id', authenticateToken, (req, res) => {
     db.query(
-        'SELECT *, DATE_FORMAT(birthdate, "%d/%m/%Y") as birthdate FROM patients WHERE uuid_patient = ?', req.params.id,
+        `SELECT *, DATE_FORMAT(birthdate, "%d/%m/%Y") as birthdate, 
+        CONCAT(DATE_FORMAT(created_on, "%d"), ' ',
+        CASE MONTH(created_on)
+            WHEN 1 THEN 'Ian.'
+            WHEN 2 THEN 'Feb.'
+            WHEN 3 THEN 'Mar.'
+            WHEN 4 THEN 'Apr.'
+            WHEN 5 THEN 'Mai'
+            WHEN 6 THEN 'Iun.'
+            WHEN 7 THEN 'Iul.'
+            WHEN 8 THEN 'Aug.'
+            WHEN 9 THEN 'Sep.'
+            WHEN 10 THEN 'Oct.'
+            WHEN 11 THEN 'Noi.'
+            ELSE 'Dec.'
+        END, ' ', DATE_FORMAT(created_on, "%Y")) as created_on FROM patients WHERE uuid_patient = ?`, req.params.id,
         (error, result) => {
             if(error)
             {
@@ -94,7 +109,7 @@ router.get('/patient-allergies/:id', authenticateToken, (req, res) => {
     );
 });
 
-router.put('/update-allergy/:id', authenticateToken, (req, res) => {
+router.put('/delete-allergy/:id', authenticateToken, (req, res) => {
     db.query(
         'UPDATE allergies SET deleted_on = NOW() WHERE id_allergy = ?', req.params.id,
         (error, result) => {
@@ -164,6 +179,156 @@ router.put('/update-info', authenticateToken, (req, res) => {
     {
         updatePatientInfo();
     }
+});
+
+router.get('/acne-type/:id', authenticateToken, (req, res) => {
+    db.query(
+        'SELECT acne_type FROM patient_skin_data WHERE uuid_patient = ?', req.params.id,
+        (error, result) => {
+            if(error)
+            {
+                res.status(500).send();
+            }
+            else
+            {
+                result.length && res.status(200).send(result[0]);
+            }
+        }
+    );
+});
+
+router.get('/treatment-plan/:id', authenticateToken, (req, res) => {
+    db.query(
+        'SELECT uuid_treatment_plan, recommendation, morning, noon, evening, observation FROM treatment_plans WHERE uuid_patient = ? AND (deleted_on IS NULL)', req.params.id,
+        (error, result) => {
+            if(error)
+            {
+                res.status(500).send();
+            }
+            else
+            {
+                if(result.length)
+                {
+                    const data = result.map((item, index) => ({...item, index: index + 1}));
+                    res.status(200).send(data);
+                }
+            }
+        }
+    );
+});
+
+
+router.post('/add-treatment-plan', authenticateToken, (req, res) => {
+    const tableData = req.body.table; 
+    const values = tableData.map(row => [
+        req.body.uuid_patient, 
+        row.uuid_treatment_plan, 
+        row.recommendation,
+        row.morning,
+        row.noon,
+        row.evening,
+        row.observation,
+        new Date(), 
+        null
+    ]);
+
+    db.query(
+        'INSERT INTO treatment_plans (uuid_patient, uuid_treatment_plan, recommendation, morning, noon, evening, observation, date, deleted_on) VALUES ?', 
+        [values],
+        (error, result) => {
+            if(error) 
+            {
+                
+                res.status(500).send();
+            } 
+            else 
+            {
+                result.affectedRows && res.status(200).send();
+            }
+        }
+    );
+});
+
+router.put('/delete-treatment-plan/:id', authenticateToken, (req, res) => {
+    db.query(
+        'UPDATE treatment_plans SET deleted_on = NOW() WHERE uuid_treatment_plan = ?', req.params.id,
+        (error, result) => {
+            if(error)
+            {
+                res.status(500).send();
+            }
+            else
+            {
+                result.affectedRows && res.status(200).send();
+            }
+        }
+    );
+});
+
+router.get('/medical-condition/:id', authenticateToken, (req, res) => {
+    db.query(
+        'SELECT * FROM medical_conditions WHERE uuid_patient = ? AND (deleted_on IS NULL)', req.params.id,
+        (error, result) => {
+            if(error)
+            {
+                res.status(500).send();
+            }
+            else
+            {
+                result && res.status(200).send(result);
+            }
+        }
+    );
+});
+
+router.put('/update-medical-condition', authenticateToken, (req, res) => {
+    db.query(
+        'UPDATE medical_conditions SET name = ?, treatment = ? WHERE id_medical_condition = ?', 
+        [req.body.name, req.body.treatment, req.body.id],
+        (error, result) => {
+            if(error)
+            {
+                res.status(500).send();
+            }
+            else
+            {
+                result.affectedRows && res.status(200).send();
+            }
+        }
+    );
+});
+
+router.post('/add-medical-condition', authenticateToken, (req, res) => {
+    db.query(
+        'INSERT INTO medical_conditions (uuid_patient, name, treatment) VALUES (?, ?, ?)', 
+        [req.body.uuid_patient, req.body.name, req.body.treatment],
+        (error, result) => {
+            if(error)
+            {
+                res.status(500).send();
+            }
+            else
+            {
+                result.affectedRows && res.status(200).send();
+            }
+        }
+    );
+});
+
+router.put('/delete-medical-condition/:id', authenticateToken, (req, res) => {
+    db.query(
+        'UPDATE medical_conditions SET deleted_on = NOW() WHERE id_medical_condition = ?', req.params.id,
+        (error, result) => {
+            if(error)
+            {
+                res.status(500).send();
+            }
+            else
+            {
+                result.affectedRows && res.status(200).send();
+            }
+        }
+    );
 });
 
 module.exports = router;

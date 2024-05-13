@@ -1,8 +1,5 @@
-.container-allergies{
-    height: 100%;
-    background: rgb(255, 255, 255);
+.container-medical-condition{
     border-radius: 30px;
-    padding: 18px;
 
     .title{
         font-size: 18px;
@@ -10,8 +7,8 @@
     }
 
     .allergies-box{
-        height: 200px;
-        overflow-y: auto;
+        padding-top: 20px;
+        padding-left: 40px;
 
         .allergy-item{
             display: flex;
@@ -30,22 +27,27 @@
                 }
             }
         }
+    }
 
-        .no-data-box{
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            justify-content: center;
-            height: 100%;
+    .grid-button{
+        align-items: center;
+        justify-content: center;
+        display: flex;
+    }
 
-            .add-icon-button{
+    .no-data-box{
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        height: 100%;
+
+        .add-icon-button{
+            background-color: #FFCF81;
+            :hover{
                 background-color: #FFCF81;
-                
-                :hover{
-                    background-color: #FFCF81;
-                }
             }
         }
     }
@@ -61,7 +63,7 @@
         background-color: transparent;
         margin-top: 10px;
 
-        &:hover{
+        :hover{
             background: transparent;
         }
     }

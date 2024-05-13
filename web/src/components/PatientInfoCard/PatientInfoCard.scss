@@ -6,7 +6,7 @@
         padding: 18px 0px;
         border-radius: 30px;
         height: 100%;
-        background: rgba(255, 255, 255, 0.555);
+        background: rgb(255, 255, 255);
 
         .patient-info-first-grid{
             padding: 0px 8px;
@@ -19,6 +19,7 @@
 
             .cnp{
                 font-size: 18px;
+                padding-bottom: 18px;
             }
 
             .phone,
@@ -27,18 +28,8 @@
                 color: gray;
 
                 &.phone{
-                    padding-top: 18px;
+                    padding-bottom: 5px;
                 }
-
-                &.address{
-                    padding-bottom: 24px;
-                }
-            }
-
-            .address{
-                font-size: 15px;
-                color: gray;
-                padding-bottom: 24px;
             }
 
             .phone-icon,
@@ -49,6 +40,16 @@
             .box{
                 text-align: center;
                 padding: 16px;
+
+                .view-button{
+                    color: #191919;
+                    border-color: #191919;
+                }
+
+                .add-button{
+                    background-color: #FFCF81;
+                    color: #191919;
+                }
             }
 
             .event-icon,
@@ -67,6 +68,43 @@
                 display: flex;
                 justify-content: flex-end;
                 padding-right: 15px;
+            }
+        }
+    }
+}
+
+.dialog-edit{
+    .appbar{
+        position: relative;
+        background: #FBFBFB;
+    
+        .save-button{
+            margin-left: auto;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .cancel-button{
+            color: #F52A2A;
+            margin-left: 10px;
+            border-color: #F52A2A;
+            :hover{
+                background-color: #FBFBFB;
+                border-color: #F52A2A;
+            }
+        }
+    }
+
+    .grid-container{
+        justify-content: center;
+
+        .grid-form{
+            width: 500px;
+            justify-content: center;
+
+            .title{
+                text-align: center;
+                font-size: 20px;
             }
         }
     }

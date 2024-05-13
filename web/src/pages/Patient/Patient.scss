@@ -22,7 +22,7 @@
                 width: 100%;
 
                 .header{
-                    background-color: #DEECFC;
+                    background-color: #bfdce565;
                 }
             }
             
@@ -31,6 +31,28 @@
                 background-color: #FFCF81;
                 padding-left: 20px;
                 padding-right: 20px;
+            }
+        }
+    }
+}
+
+.dialog-patient{
+    .dialog-actions{
+        padding: 0px 30px 30px 30px;
+
+        .save-button{
+            margin-left: auto;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    
+        .cancel-button{
+            color: #F52A2A;
+            margin-left: 10px;
+            border-color: #F52A2A;
+            :hover{
+                background-color: #FBFBFB;
+                border-color: #F52A2A;
             }
         }
     }

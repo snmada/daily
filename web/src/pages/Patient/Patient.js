@@ -13,6 +13,7 @@ import './Patient.scss';
 import {roRO} from '@mui/x-data-grid/locales';
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import CustomAlert from '../../components/CustomAlert/CustomAlert.js';
 
 const initialState = {firstname: '', lastname: '', CNP: '', phone: '', address: '', country: ''};
 
@@ -38,7 +39,7 @@ function Patient()
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
 
     const [formData, setFormData] = useState(initialState);
 
@@ -46,7 +47,23 @@ function Patient()
 
     const handleClickOpen = () => setOpen(true);
     
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        setFormData(initialState);
+        setErrorMessage('');
+    };
+
+    const [alert, setAlert] = useState(null);
+
+    useEffect(() => {
+        if(alert) 
+        {
+            setTimeout(() => {
+                setAlert(null); 
+                setFormData(initialState);
+            }, 5000); 
+        }
+    }, [alert]);
 
     const schema = yup.object().shape({
         firstname: yup.string().required('Câmp obligatoriu').matches(/[a-zA-ZăâîșțĂÂÎȘȚ -]+$/, 'Sunt acceptate doar caractere alfabetice'),
@@ -55,7 +72,11 @@ function Patient()
         phone: yup.string().required('Câmp obligatoriu').matches(/^[0-9]+$/, 'Sunt acceptate doar cifre')
                     .min(10, 'Lungimea maximă este de 10 cifre').max(10, 'Lungimea maximă este de 10 cifre'),
         address: yup.string().max(45, 'Lungimea maximă este de 45 de caractere'),
-        country: yup.string().max(45, 'Lungimea maximă este de 45 de caractere'),
+        country: yup.string().ensure().when('address', {
+            is: (address) => address && address.trim().length > 0,
+            then: () => yup.string().required('Câmp obligatoriu')
+        }).max(45, 'Lungimea maximă este de 45 de caractere')
+
     });
 
     const {register, handleSubmit, formState: {errors}} = useForm({
@@ -86,8 +107,18 @@ function Patient()
             }
         })
         .catch((error) => {
-            (error.response.status === 409)? 
-                setErrorMessage(error.response.data) : alert('A intervenit o eroare. Vă rugăm să încercați mai târziu.');
+            if(error.response.status === 409) 
+            {
+                setErrorMessage(error.response.data);
+            }
+            else
+            {
+                setAlert({
+                    severity: 'error',
+                    text: 'A intervenit o eroare. Vă rugăm să încercați mai târziu.'
+                });
+                handleClose(true);
+            }
         });
     };
 
@@ -150,6 +181,7 @@ function Patient()
 
     return(
         <Grid container className='patient'>
+            {alert && (<CustomAlert severity={alert.severity} text={alert.text}/>)}
             <SideBar />
             <Grid item className='main-content'>
                 <NavBar title=''/>
@@ -188,7 +220,7 @@ function Patient()
                         </Box>
                     </Grid>
                 </Grid>
-                <Dialog open={open} onClose={handleClose}>
+                <Dialog open={open} onClose={handleClose} className='dialog-patient'>
                     <DialogTitle sx={{textAlign: 'center', padding: '40px 30px 0px 30px'}}>Formular pentru adăugarea unui pacient nou</DialogTitle>
 
                     <form onSubmit={handleSubmit(onSubmit)}>
@@ -205,7 +237,7 @@ function Patient()
                                         value={formData.lastname} 
                                         name='lastname' 
                                         type='text' 
-                                        label='Nume' 
+                                        label='Nume *' 
                                         variant='outlined' 
                                         onChange={handleChange} 
                                         fullWidth
@@ -218,7 +250,7 @@ function Patient()
                                         value={formData.firstname} 
                                         name='firstname' 
                                         type='text' 
-                                        label='Prenume' 
+                                        label='Prenume *' 
                                         variant='outlined' 
                                         onChange={handleChange} 
                                         fullWidth
@@ -231,7 +263,7 @@ function Patient()
                                         value={formData.CNP} 
                                         name='CNP' 
                                         type='text' 
-                                        label='CNP (Cod Numeric Personal)' 
+                                        label='CNP (Cod Numeric Personal) *' 
                                         variant='outlined' 
                                         onChange={handleChange} 
                                         fullWidth
@@ -244,7 +276,7 @@ function Patient()
                                         value={formData.phone} 
                                         name='phone' 
                                         type='text' 
-                                        label='Telefon' 
+                                        label='Telefon *' 
                                         variant='outlined' 
                                         onChange={handleChange} 
                                         fullWidth
@@ -279,11 +311,10 @@ function Patient()
                                 </Grid>
                             </Grid>   
                             {errorMessage &&  <Alert severity='error' width={'100%'}>{errorMessage}</Alert>}
-                        
                         </DialogContent>
-                        <DialogActions sx={{padding: '0px 30px 30px 30px'}}>
-                            <Button sx={{background: '#68B984', color: '#FBFBFB', paddingLeft: '20px', paddingRight: '20px', '&:hover': {background: '#68B984'}}} type='submit'>Salvează</Button>
-                            <Button sx={{color: '#f52a2a'}} onClick={handleClose}>Anulează</Button>
+                        <DialogActions className='dialog-actions'>
+                            <Button className='save-button' variant='contained' type='submit'>Salvează</Button>
+                            <Button className='cancel-button' variant='outlined' onClick={handleClose}>Anulează</Button>
                         </DialogActions>
                     </form>
                 </Dialog>
