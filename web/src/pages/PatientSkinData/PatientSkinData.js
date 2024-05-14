@@ -2,12 +2,12 @@ import React, {useState, useEffect} from 'react';
 import SideBar from '../../components/SideBar/SideBar.js';
 import NavBar from '../../components/NavBar/NavBar.js';
 import './PatientSkinData.scss';
-import {Grid, Typography, Button, Box, TextField, LinearProgress, Paper, Radio, RadioGroup, FormControlLabel, FormControl} from '@mui/material';
+import {Grid, Typography, Button, Box, TextField, LinearProgress, Paper, IconButton, Tooltip, Radio, RadioGroup, FormControlLabel, FormControl} from '@mui/material';
 import {ArrowForwardIos as ArrowForwardIosIcon} from '@mui/icons-material';
 import axios from 'axios';
 import {useParams, useNavigate} from 'react-router-dom';
 import CustomAlert from '../../components/CustomAlert/CustomAlert.js';
-import {jwtDecode} from 'jwt-decode';
+import {ModeEditOutline as ModeEditOutlineIcon} from '@mui/icons-material';
 
 const initialState = {phototype: '', skin_type: '', acne_type: '', acne_description: '', acne_localization: '', acne_severity: '', acne_history: '', treatment_history: '', observations: ''};
 
@@ -15,7 +15,7 @@ function PatientSkinData()
 {
     const navigate = useNavigate();
     const param = useParams();
-    const [formData, setFormData] = useState(initialState);
+    const [formData, setFormData] = useState({phototype: '', skin_type: '', acne_type: '', acne_description: '', acne_localization: '', acne_severity: '', acne_history: '', treatment_history: '', observations: ''});
     const handleChange = (event) => setFormData({...formData, [event.target.name]: event.target.value});
     const token = sessionStorage.getItem('token');
     const [patient, setPatient] = useState({});
@@ -24,7 +24,6 @@ function PatientSkinData()
     const [editMode, setEditMode] = useState(false);
     const [disabled, setDisabled] = useState(false);
     const [alert, setAlert] = useState(null);
-    const decoded_token_patient = jwtDecode(sessionStorage.getItem('token_patient'));
 
     useEffect(() => {
         if(alert) 
@@ -74,7 +73,10 @@ function PatientSkinData()
             }
         })
         .catch((error) => {
-            (error.response.status === 500) && alert('A intervenit o eroare. Vă rugăm să încercați mai târziu.');
+            setAlert({
+                severity: 'error',
+                text: 'A intervenit o eroare. Vă rugăm să încercați mai târziu.'
+            });
             setIsLoading(false);
         });
     }
@@ -92,48 +94,70 @@ function PatientSkinData()
                 setFormData(response.data);
                 setAddMode(false);
                 setDisabled(true);
-                setIsLoading(false);
             }
         })
         .catch((error) => {
-            (error.response.status === 500) && alert('A intervenit o eroare. Vă rugăm să încercați mai târziu.');
-            (error.response.status === 404) && setAddMode(true);
-            setIsLoading(false);
+            if(error.response.status === 404)
+            {
+                setAddMode(true);
+            }
+            else
+            {
+                setAlert({
+                    severity: 'error',
+                    text: 'A intervenit o eroare. Vă rugăm să încercați mai târziu.'
+                });
+            }
         });
     }
 
     const addSkinData =  () => {
-        axios.post('http://localhost:3001/patient-skin-data/add', {
-            uuid_patient: param.uuid_patient, 
-            phototype: formData.phototype, 
-            skin_type: formData.skin_type, 
-            acne_type: formData.acne_type, 
-            acne_description: formData.acne_description,
-            acne_localization: formData.acne_localization, 
-            acne_severity: formData.acne_severity, 
-            acne_history: formData.acne_history, 
-            treatment_history: formData.treatment_history, 
-            observations: formData.observations
-        },
+        if(!(JSON.stringify(formData) === JSON.stringify(initialState)))
         {
-            headers:{
-                'authorization': `Bearer ${token}`
-            }
-        })
-        .then((response) => {
-            if(response.status === 200)
+            for(const key in formData) 
             {
-                setAddMode(false);
-                setDisabled(true);
-                setAlert({
-                    severity: 'success',
-                    text: 'Datele au fost salvate cu succes'
-                });
+                if(!formData[key]) 
+                {
+                    formData[key] = 'N/A';
+                }
             }
-        })
-        .catch((error) => {
-            (error.response.status === 500) && alert('A intervenit o eroare. Vă rugăm să încercați mai târziu.');
-        });
+            axios.post('http://localhost:3001/patient-skin-data/add', {
+                uuid_patient: param.uuid_patient, 
+                phototype: formData.phototype, 
+                skin_type: formData.skin_type, 
+                acne_type: formData.acne_type, 
+                acne_description: formData.acne_description,
+                acne_localization: formData.acne_localization, 
+                acne_severity: formData.acne_severity, 
+                acne_history: formData.acne_history, 
+                treatment_history: formData.treatment_history, 
+                observations: formData.observations
+            },
+            {
+                headers:{
+                    'authorization': `Bearer ${token}`
+                }
+            })
+            .then((response) => {
+                if(response.status === 200)
+                {
+                    fetchSkinData();
+                    setAddMode(false);
+                    setDisabled(true);
+                    setAlert({
+                        severity: 'success',
+                        text: 'Datele au fost salvate cu succes'
+                    });
+                    
+                }
+            })
+            .catch((error) => {
+                setAlert({
+                    severity: 'error',
+                    text: 'A intervenit o eroare. Vă rugăm să încercați mai târziu.'
+                });
+            });
+        }
     };
 
     const updateSkinData = () => {
@@ -164,7 +188,10 @@ function PatientSkinData()
             }
         })
         .catch((error) => {
-            (error.response.status === 500) && alert('A intervenit o eroare. Vă rugăm să încercați mai târziu.');
+            setAlert({
+                severity: 'error',
+                text: 'A intervenit o eroare. Vă rugăm să încercați mai târziu.'
+            });
         });
     }
 
@@ -188,23 +215,29 @@ function PatientSkinData()
                     {alert && (<CustomAlert severity={alert.severity} text={alert.text}/>)}
                     <SideBar/>
                     <Grid item className='main-content'>
-                        <NavBar title='Skin Data'/>
+                        <NavBar title=''/>
                         <Grid item xs={12} className='grid-item-path'>
                             <Typography className='path'>
-                                Pacienți <ArrowForwardIosIcon className='arrow-icon'/>{decoded_token_patient.lastname.toUpperCase()} {decoded_token_patient.firstname}
+                                Pacienți <ArrowForwardIosIcon className='arrow-icon'/>
+                                {patient.lastname.toUpperCase()} {patient.firstname} <ArrowForwardIosIcon className='arrow-icon'/>
+                                FIȘĂ DE EVALUARE
                             </Typography>
-                            {addMode && <Button variant='contained' onClick={() => {addSkinData()}}>Salvează</Button>}
-                                
-                            {(!addMode && !editMode) && <Button variant='contained' onClick={() => {setDisabled(false); setEditMode(true)}}>Actualizează</Button>}
-
-                            {editMode && <Button variant='contained' onClick={() => {updateSkinData()}}>Salvează datele actualizate</Button>}
-
-                            {addMode && <Button variant='contained' onClick={() => {navigate(`/patients/${param.uuid_patient}`);}}>Anulare</Button>}
-
-                            {editMode && <Button variant='contained' onClick={() => {setDisabled(true); setEditMode(false)}}>Anulare</Button>}
                         </Grid>
                         <Grid container className='grid-container'>
                             <Paper elevation={5} className='paper'>
+                                {
+                                    (!addMode && !editMode) && 
+                                    <Grid item xs={12} className='grid-button'>
+                                        <Tooltip title={<h2>Editează fișa de evaluare</h2>}>
+                                            <IconButton onClick={() => {setDisabled(false); setEditMode(true)}}>
+                                                <ModeEditOutlineIcon/>
+                                            </IconButton>
+                                        </Tooltip>
+                                    </Grid>
+                                }
+                                <Grid item xs={12} pt={1} pb={4}>
+                                    <Typography sx={{textAlign: 'center', fontSize: '25px'}}>FIȘĂ DE EVALUARE</Typography>
+                                </Grid>
                                 <Grid item xs={12} className='grid-title' p={2}>
                                     <Typography className='title'>Examinare fizică</Typography>
                                 </Grid>
@@ -327,6 +360,15 @@ function PatientSkinData()
                                         value={formData.observations}
                                         onChange={handleChange}
                                     />
+                                </Grid>
+                                <Grid item xs={12} className='grid-button' pt={2} pb={2}>
+                                    {addMode && <Button variant='contained' className='save-button' onClick={() => {addSkinData()}}>SALVEAZĂ</Button>}
+        
+                                    {editMode && <Button variant='contained' className='save-button' onClick={() => {updateSkinData()}}>SALVEAZĂ DATELE MODIFICATE</Button>}
+        
+                                    {addMode && <Button variant='outlined' className='cancel-button' onClick={() => {navigate(`/patients/${param.uuid_patient}`)}}>ANULEAZĂ</Button>}
+        
+                                    {editMode && <Button variant='outlined' className='cancel-button' onClick={() => {setDisabled(true); setEditMode(false)}}>ANULEAZĂ</Button>}
                                 </Grid>
                             </Paper>
                         </Grid>

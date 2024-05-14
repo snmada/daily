@@ -15,7 +15,7 @@ function App() {
                 <Route exact path='/dashboard' element={<Dashboard/>}/>
                 <Route exact path='/patients' element={<Patient/>}/>
                 <Route exact path='/patients/:uuid_patient' element={<PatientProfile/>}/>
-                <Route exact path='/skin-data/:uuid_patient' element={<PatientSkinData/>}/>
+                <Route exact path='/patients/:uuid_patient/skin-data' element={<PatientSkinData/>}/>
             </Routes>
         </BrowserRouter>
     );

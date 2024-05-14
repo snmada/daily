@@ -31,7 +31,11 @@
             background-color: transparent;
 
             &:hover{
-                background-color: #D6DAC8;
+                background-color: #bfdce58c;
+                border-left: none;
+                border-right: none;
+                border-top: none;
+                border-bottom: 3px solid rgba(0, 0, 0, 0.171);
             }
 
             &#active{

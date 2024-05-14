@@ -102,8 +102,6 @@ function Patient()
             if(response.status === 200)
             {
                 navigate(`/patients/${response.data.uuid_patient}`);
-                sessionStorage.setItem('uuid_patient', response.data.uuid_patient);
-                sessionStorage.setItem('token_patient', response.data.token_patient);
             }
         })
         .catch((error) => {
