@@ -227,8 +227,8 @@ function PatientInfoCard({alert, setAlert})
                                         <Typography className='typography'>Prima vizită</Typography>
                                         <Typography className='typography' mb={1}>{patientInfo.created_on}</Typography>
                                         {existRecord? (
-                                            <Button  variant='outlined' onClick={() => navigate(`/skin-data/${param.uuid_patient}`)}>VEZI FIȘA DE EVALUARE</Button>
-                                        ):(<Button className='add-button' variant='contained' onClick={() => navigate(`/skin-data/${param.uuid_patient}`)}>ADAUGĂ FIȘA DE EVALUARE</Button>)}
+                                            <Button  variant='outlined' onClick={() => navigate(`/patients/${param.uuid_patient}/skin-data`)}>VEZI FIȘA DE EVALUARE</Button>
+                                        ):(<Button className='add-button' variant='contained' onClick={() => navigate(`/patients/${param.uuid_patient}/skin-data`)}>ADAUGĂ FIȘA DE EVALUARE</Button>)}
                                     </Box>
                                 </Grid>
                             </Grid>
