@@ -9,11 +9,9 @@ import {faEye, faEyeSlash, faUser, faLock} from '@fortawesome/free-solid-svg-ico
 import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useFonts, Poppins_500Medium} from '@expo-google-fonts/poppins';
 
 export default function SignIn()
 {
-    const fontLoaded = useFonts({Poppins_500Medium});
     const navigation = useNavigation();
 
     const [showPassword, setShowPassword] = useState(true);
@@ -37,7 +35,9 @@ export default function SignIn()
         .then((response) => {
             if(response.status === 200)
             {
-                AsyncStorage.setItem('uuid_patient', response.data);
+                AsyncStorage.setItem('uuid_doctor', response.data.uuid_doctor);
+                AsyncStorage.setItem('uuid_patient', response.data.uuid_patient);
+                navigation.navigate('Home');
             }
         })
         .catch((error) => {
@@ -46,67 +46,60 @@ export default function SignIn()
         });
     };
 
-    if(!fontLoaded)
-    {
-        return <View></View>
-    }
-    else
-    {
-        return(
-            <View style={styles.viewSignIn}>
-                <Text style={styles.logo}>DAILY</Text>
-                <View style={styles.viewForm}>
-                    <Controller
-                        control={control}
-                        render={({field: {onChange, value}}) => (
-                            <View style={styles.viewTextInput}>
-                                <FontAwesomeIcon icon={faUser} style={styles.icon} size={15}/>
-                                <TextInput
-                                    style={styles.textInput}
-                                    placeholder='Nume utilizator'
-                                    onChangeText={onChange}
-                                    value={value}
-                                />
-                            </View>
-                        )}
-                        name='username'
-                    />
-                    {errors.username && <Text style={styles.error}>{errors.username.message}</Text>}
-                    <Controller
-                        control={control}
-                        render={({field: {onChange, value}}) => (
-                            <View style={styles.viewTextInput}>
-                                <FontAwesomeIcon icon={faLock} style={styles.icon} size={15}/>
-                                <TextInput
-                                    style={styles.textInput}
-                                    placeholder='Parolă'
-                                    onChangeText={onChange}
-                                    value={value}
-                                    secureTextEntry={showPassword}
-                                />
-                                <TouchableOpacity onPress={handleClickShowPassword} style={{padding: 10}}>
-                                    <FontAwesomeIcon icon={showPassword? faEye : faEyeSlash} style={styles.icon} size={19}/>
-                                </TouchableOpacity>
-                            </View>
-                        )}
-                        name='password'
-                    />
-                    {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
-                    <TouchableOpacity style={styles.buttonSignIn} onPress={handleSubmit(onSubmit)}>
-                        <Text style={styles.textButtonSignIn}>Intră în cont</Text>
-                    </TouchableOpacity>
-                    <View style={styles.viewOR}>
-                        <View style={styles.line}/>
-                            <Text style={styles.textOR}>SAU</Text>
-                        <View style={styles.line}/>
-                    </View>
-                    <TouchableOpacity style={styles.buttonSignUp} onPress={() => navigation.navigate('SignUp')}>
-                        <Text style={styles.textButtonSignUp}>Înregistrează-te</Text>
-                    </TouchableOpacity>
+    return(
+        <View style={styles.viewSignIn}>
+            <Text style={styles.logo}>DAILY</Text>
+            <View style={styles.viewForm}>
+                <Controller
+                    control={control}
+                    render={({field: {onChange, value}}) => (
+                        <View style={styles.viewTextInput}>
+                            <FontAwesomeIcon icon={faUser} style={styles.icon} size={15}/>
+                            <TextInput
+                                style={styles.textInput}
+                                placeholder='Nume utilizator'
+                                onChangeText={onChange}
+                                value={value}
+                            />
+                        </View>
+                    )}
+                    name='username'
+                />
+                {errors.username && <Text style={styles.error}>{errors.username.message}</Text>}
+                <Controller
+                    control={control}
+                    render={({field: {onChange, value}}) => (
+                        <View style={styles.viewTextInput}>
+                            <FontAwesomeIcon icon={faLock} style={styles.icon} size={15}/>
+                            <TextInput
+                                style={styles.textInput}
+                                placeholder='Parolă'
+                                onChangeText={onChange}
+                                value={value}
+                                secureTextEntry={showPassword}
+                            />
+                            <TouchableOpacity onPress={handleClickShowPassword} style={{padding: 10}}>
+                                <FontAwesomeIcon icon={showPassword? faEye : faEyeSlash} style={styles.icon} size={19}/>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    name='password'
+                />
+                {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
+                <TouchableOpacity style={styles.buttonSignIn} onPress={handleSubmit(onSubmit)}>
+                    <Text style={styles.textButtonSignIn}>Intră în cont</Text>
+                </TouchableOpacity>
+                <View style={styles.viewOR}>
+                    <View style={styles.line}/>
+                        <Text style={styles.textOR}>SAU</Text>
+                    <View style={styles.line}/>
                 </View>
+                <TouchableOpacity style={styles.buttonSignUp} onPress={() => navigation.navigate('SignUp')}>
+                    <Text style={styles.textButtonSignUp}>Înregistrează-te</Text>
+                </TouchableOpacity>
             </View>
-        );
-    }
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -139,8 +132,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         flex: 1, 
         padding: 10,
-        fontSize: 16,
-        fontFamily: 'Poppins_500Medium'
+        fontSize: 16
     },
     buttonSignIn: {
         marginTop: 5,
@@ -148,12 +140,13 @@ const styles = StyleSheet.create({
         width: 300,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#FFCF81',
+        backgroundColor: '#6961A8',
         borderRadius: 50
     },
     textButtonSignIn: {
-        fontSize: 16,
-        fontFamily: 'Poppins_500Medium'
+        fontSize: 18,
+        color: '#FBFBFB',
+        fontWeight: 'bold'
     },
     buttonSignUp: {
         marginTop: 5,
@@ -165,12 +158,12 @@ const styles = StyleSheet.create({
         borderRadius: 50
     },
     textButtonSignUp: {
-        fontSize: 16,
-        fontFamily: 'Poppins_500Medium'
+        fontSize: 18,
+        color: '#6961A8',
+        fontWeight: 'bold'
     },
     error: {
-        color: '#f52a2a',
-        fontFamily: 'Poppins_500Medium'
+        color: '#f52a2a'
     },
     icon: {
         color: '#9DB2BF'
