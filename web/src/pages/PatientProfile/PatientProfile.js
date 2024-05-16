@@ -13,6 +13,7 @@ import TreatmentCard from '../../components/TreatmentCard/TreatmentCard.js';
 import MedicalConditionCard from '../../components/MedicalConditionCard/MedicalConditionCard.js';
 import CustomAlert from '../../components/CustomAlert/CustomAlert.js';
 import axios from 'axios';
+import Gallery from '../../components/Gallery/Gallery.js';
 
 function PatientProfile()
 {
@@ -150,6 +151,9 @@ function PatientProfile()
                                         </Grid>
                                     </Grid>
                                 </div>
+                            </Grid>
+                            <Grid item xs={3} pt={3}>
+                                <Gallery/>
                             </Grid>
                         </Grid>
                     </Grid>
