@@ -2,6 +2,9 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import SignUp from './screens/SignUp.js';
 import SignIn from './screens/SignIn.js';
+import Home from './screens/Home.js';
+import Gallery from './screens/Gallery.js';
+import UploadImage from './screens/UploadImage.js';
 
 const Stack = createStackNavigator();
 
@@ -12,6 +15,9 @@ export default function App()
             <Stack.Navigator screenOptions={{headerShown: false}}>
                 <Stack.Screen name='SignIn' component={SignIn}/>
                 <Stack.Screen name='SignUp' component={SignUp}/>
+                <Stack.Screen name='Home' component={Home}/>
+                <Stack.Screen name='Gallery' component={Gallery}/>
+                <Stack.Screen name='UploadImage' component={UploadImage}/>
             </Stack.Navigator>
         </NavigationContainer>
     );

@@ -5,7 +5,8 @@ const bcrypt = require('bcrypt');
 
 router.post('/user-sign-in', (req, res) => {
     db.query(
-        'SELECT uuid_patient, password FROM patient_accounts WHERE username = ?', req.body.username,
+        `SELECT pa.uuid_patient, pa.password, p.uuid_doctor FROM patient_accounts pa 
+        JOIN patients p ON pa.uuid_patient = p.uuid_patient WHERE pa.username = ?`, req.body.username,
         (error, result) => {
             if(error)
             {
@@ -22,7 +23,17 @@ router.post('/user-sign-in', (req, res) => {
                         }
                         else
                         {
-                            response? res.status(200).send(result[0].uuid_patient) : res.status(422).send('Ați introdus date incorecte');
+                            if(response)
+                            {
+                                res.status(200).send({
+                                    uuid_doctor: result[0].uuid_doctor, 
+                                    uuid_patient: result[0].uuid_patient
+                                });
+                            }
+                            else
+                            {
+                                res.status(422).send('Ați introdus date incorecte');
+                            }
                         }
                     });
                 }
