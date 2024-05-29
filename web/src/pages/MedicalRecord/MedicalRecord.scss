@@ -1,0 +1,80 @@
+.medical-record{
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    background-image: linear-gradient(to left, #bfdce5, #cce1eb, #d9e6f0, #e6ecf4, #f0f2f7, #f0f2f7, #f0f2f7, #f0f2f7, #e6ecf4, #d9e6f0, #cce1eb, #bfdce5);
+
+    .main-content{
+        flex: 1;
+        min-height: 100vh;
+        margin: 0px 25px;
+
+        .grid-item-path{
+            padding: 18px 0px;
+            display: flex;
+            align-items: center;
+
+            .path{
+                font-size: 17px;
+                padding-right: 15px;
+
+                .arrow-icon{
+                    font-size: 15px;
+                }
+            }
+        }
+
+        .grid-container{
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .paper{
+                width: 850px;
+                padding: 30px;
+
+                .grid-title{
+                    background: #e3f6fe;
+                    border-left: 3px solid #568fa0;
+                }
+
+                .title{
+                    font-size: 18px;
+                }
+
+                .box-lesion{
+                    display: flex;
+                    align-items: center;
+                    margin: 10px 40px;
+
+                    .name{
+                        font-size: 18px;
+                        padding-right: 20px;
+                    }
+                }
+
+                .grid-button{
+                    display: flex;
+                    justify-content: flex-end;
+
+                    .save-button{
+                        margin-left: auto;
+                        padding-left: 20px;
+                        padding-right: 20px;
+                    }
+                
+                    .cancel-button{
+                        color: #F52A2A;
+                        margin-left: 10px;
+                        border-color: #F52A2A;
+                        :hover{
+                            background-color: #FBFBFB;
+                            border-color: #F52A2A;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

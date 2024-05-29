@@ -14,20 +14,23 @@ import MedicalConditionCard from '../../components/MedicalConditionCard/MedicalC
 import CustomAlert from '../../components/CustomAlert/CustomAlert.js';
 import axios from 'axios';
 import Gallery from '../../components/Gallery/Gallery.js';
+import {useNavigate} from 'react-router-dom';
 
 function PatientProfile()
 {
     const token = sessionStorage.getItem('token');
     const param = useParams();
-    const [patientConsultations, setPatientConsultations] = useState([]);
+    const [medicalRecords, setMedicalRecords] = useState([]);
     const [tabValue, setTabValue] = useState('1');
     const handleChangeTabValue = (event, newValue) => setTabValue(newValue);
     const [alert, setAlert] = useState(null);
     const [patient, setPatient] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchPatient();
+        fetchMedicalRecord();
     },[])
 
     const fetchPatient = () => {
@@ -41,6 +44,29 @@ function PatientProfile()
             if(response.status === 200)
             {
                 setPatient(response.data);
+                setIsLoading(false);
+            }
+        })
+        .catch((error) => {
+            setAlert({
+                severity: 'error',
+                text: 'A intervenit o eroare. Vă rugăm să încercați mai târziu.'
+            });
+            setIsLoading(false);
+        });
+    }
+
+    const fetchMedicalRecord = () => {
+        axios.get(`http://localhost:3001/patient-medical-record/data/${param.uuid_patient}`,
+        {
+            headers:{
+                'authorization': `Bearer ${token}`
+            }
+        })
+        .then((response) => {
+            if(response.status === 200)
+            {
+                setMedicalRecords(response.data);
                 setIsLoading(false);
             }
         })
@@ -100,22 +126,22 @@ function PatientProfile()
                                                     <Grid container className='container-tab-panel'>
                                                         <Grid item xs={12}>
                                                             {
-                                                                patientConsultations.length !== 0 &&  
+                                                                medicalRecords.length !== 0 &&  
                                                                 <Box className='box'pb={2}>
-                                                                    <Button>+ CONSULTAȚIE NOUĂ</Button>
+                                                                    <Button onClick={() => navigate(`/patients/${param.uuid_patient}/medical-record`)}>+ CONSULTAȚIE NOUĂ</Button>
                                                                 </Box>
                                                             }
                                                             <Stepper orientation='vertical'>
                                                                 {
-                                                                    patientConsultations.length !== 0?
+                                                                    medicalRecords.length !== 0?
                                                                     (
-                                                                        patientConsultations.map((consultation, index) => (
+                                                                        medicalRecords.map((medicalRecord, index) => (
                                                                             <Step key={index}>
                                                                                 <StepLabel StepIconComponent={ContentPasteIcon}>
                                                                                     <Grid container className='container-step'>
                                                                                         <Tooltip title={<h2>Vezi consultație</h2>}>
                                                                                             <Grid item xs={12}>
-                                                                                                <Typography>Data: {consultation.date}</Typography>
+                                                                                                <Typography>Data: {medicalRecord.date}</Typography>
                                                                                             </Grid>
                                                                                         </Tooltip>
                                                                                     </Grid>
@@ -128,7 +154,7 @@ function PatientProfile()
                                                                         <Box className='no-data-box'>
                                                                             <Typography sx={{color: '#61677A'}} pb={2}>Nu există consultații</Typography>
                                                                             <Tooltip title={<h2>Adaugă o consultație</h2>}>
-                                                                                <IconButton className='add-icon-button'>
+                                                                                <IconButton className='add-icon-button' onClick={() => navigate(`/patients/${param.uuid_patient}/medical-record`)}>
                                                                                     <AddIcon/>
                                                                                 </IconButton>
                                                                             </Tooltip>   
