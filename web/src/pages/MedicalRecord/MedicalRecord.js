@@ -2,8 +2,8 @@ import React, {useState, useEffect} from 'react';
 import SideBar from '../../components/SideBar/SideBar.js';
 import NavBar from '../../components/NavBar/NavBar.js';
 import './MedicalRecord.scss';
-import {Grid, Typography, Button, Box, TextField, LinearProgress, Paper, Slider} from '@mui/material';
-import {ArrowForwardIos as ArrowForwardIosIcon} from '@mui/icons-material';
+import {Grid, Typography, Button, Box, TextField, Paper, Slider} from '@mui/material';
+import {Undo as UndoIcon} from '@mui/icons-material';
 import axios from 'axios';
 import {useParams, useNavigate} from 'react-router-dom';
 import CustomAlert from '../../components/CustomAlert/CustomAlert.js';
@@ -23,8 +23,6 @@ function MedicalRecord()
     );
     const handleChange = (event) => setFormData({...formData, [event.target.name]: event.target.value});
     const token = sessionStorage.getItem('token');
-    const [patient, setPatient] = useState({});
-    const [isLoading, setIsLoading] = useState(true);
     const [alert, setAlert] = useState(null);
     const [disabled, setDisabled] = useState(false);
 
@@ -37,33 +35,6 @@ function MedicalRecord()
             }, 5000); 
         }
     }, [alert]);
-
-    useEffect(() => {
-        fetchPatient();
-    },[])
-
-    const fetchPatient = () => {
-        axios.get(`http://localhost:3001/patient-medical-record/patient-name/${param.uuid_patient}`,
-        {
-            headers:{
-                'authorization': `Bearer ${token}`
-            }
-        })
-        .then((response) => {
-            if(response.status === 200)
-            {
-                setPatient(response.data);
-                setIsLoading(false);
-            }
-        })
-        .catch((error) => {
-            setAlert({
-                severity: 'error',
-                text: 'A intervenit o eroare. Vă rugăm să încercați mai târziu.'
-            });
-            setIsLoading(false);
-        });
-    }
 
     const addMedicalRecord =  () => {
         if(!(JSON.stringify(formData) === JSON.stringify(initialState)))
@@ -141,210 +112,201 @@ function MedicalRecord()
     ];
 
     return(
-        <>
-        {
-            isLoading?
-            (
-                <Box sx={{width: '100%'}}>
-                    <LinearProgress/>
-                </Box>
-            )
-            :
-            (
-                <Grid container className='medical-record'>
-                    {alert && (<CustomAlert severity={alert.severity} text={alert.text}/>)}
-                    <SideBar/>
-                    <Grid item className='main-content'>
-                        <NavBar title=''/>
-                        <Grid item xs={12} className='grid-item-path'>
-                            <Typography className='path'>
-                                Pacienți <ArrowForwardIosIcon className='arrow-icon'/>
-                                {patient.lastname.toUpperCase()} {patient.firstname} <ArrowForwardIosIcon className='arrow-icon'/>
-                                CONSULTAȚIE
-                            </Typography>
+        <Grid container className='medical-record'>
+            {alert && (<CustomAlert severity={alert.severity} text={alert.text}/>)}
+            <SideBar/>
+            <Grid item className='main-content'>
+                <NavBar title=''/>
+                <Grid item xs={12} className='grid-item-path'>
+                    <Typography className='path'>
+                       <Button startIcon={<UndoIcon/>} variant='contained' onClick={() => {navigate(`/patients/${param.uuid_patient}`)}}>Înapoi</Button>
+                    </Typography>
+                </Grid>
+                <Grid container className='grid-container'>
+                    <Paper elevation={5} className='paper'>
+                        <Typography sx={{textAlign: 'center', fontSize: '25px'}} py={4}>Formular consultație</Typography>
+                        <Grid item xs={12} className='grid-title' p={2}>
+                            <Typography className='title'>Monitorizarea progresului</Typography>
                         </Grid>
-                        <Grid container className='grid-container'>
-                            <Paper elevation={5} className='paper'>
-                                <Grid item xs={12} className='grid-title' p={2}>
-                                    <Typography className='title'>Monitorizarea progresului</Typography>
-                                </Grid>
-                                <Grid item xs={12} py={2}>
-                                    <Typography className='title'>Leziuni</Typography>
-                                    <Box className='box-lesion'>
-                                        <Typography className='name'>Comedoane: </Typography> 
-                                        <TextField 
-                                            name='comedones'
-                                            label='' 
-                                            variant='standard'
-                                            value={formData.comedones}
-                                            onChange={handleChange}
-                                            sx={{width: '100%'}}
-                                            disabled={disabled}
-                                        />
-                                    </Box>
-                                    <Box className='box-lesion'>
-                                        <Typography className='name'>Papule: </Typography> 
-                                        <TextField 
-                                            name='papules'
-                                            label='' 
-                                            variant='standard'
-                                            value={formData.papules}
-                                            onChange={handleChange}
-                                            sx={{width: '100%'}}
-                                            disabled={disabled}
-                                        />
-                                    </Box>
-                                    <Box className='box-lesion'>
-                                        <Typography className='name'>Pustule: </Typography> 
-                                        <TextField 
-                                            name='pustules'
-                                            label='' 
-                                            variant='standard'
-                                            value={formData.pustules}
-                                            onChange={handleChange}
-                                            sx={{width: '100%'}}
-                                            disabled={disabled}
-                                        />
-                                    </Box>
-                                    <Box className='box-lesion'>
-                                        <Typography className='name'>Noduli: </Typography> 
-                                        <TextField 
-                                            name='nodules'
-                                            label='' 
-                                            variant='standard'
-                                            value={formData.nodules}
-                                            onChange={handleChange}
-                                            sx={{width: '100%'}}
-                                            disabled={disabled}
-                                        />
-                                    </Box>
-                                    <Box className='box-lesion'>
-                                        <Typography className='name'>Chisturi: </Typography> 
-                                        <TextField 
-                                            name='cysts'
-                                            label='' 
-                                            variant='standard'
-                                            value={formData.cysts}
-                                            onChange={handleChange}
-                                            sx={{width: '100%'}}
-                                            disabled={disabled}
-                                        />
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={12} py={2}>
-                                    <Typography pb={2} className='title'>Zone afectate</Typography>
-                                    <TextField 
-                                        name='affected_areas'
-                                        multiline 
-                                        placeholder='Introduceți aici.....' 
-                                        maxRows={4} 
-                                        style={{width: '100%'}}
-                                        value={formData.affected_areas}
+                        <Grid item xs={12} py={2}>
+                            <Typography className='title'>Leziuni</Typography>
+                            <Box className='box-lesion'>
+                                <Typography className='name'>Comedoane: </Typography> 
+                                <TextField 
+                                    name='comedones'
+                                    label='' 
+                                    variant='standard'
+                                    value={formData.comedones}
+                                    onChange={handleChange}
+                                    sx={{width: '100%'}}
+                                    disabled={disabled}
+                                />
+                            </Box>
+                            <Box className='box-lesion'>
+                                <Typography className='name'>Papule: </Typography> 
+                                <TextField 
+                                    name='papules'
+                                    label='' 
+                                    variant='standard'
+                                    value={formData.papules}
+                                    onChange={handleChange}
+                                    sx={{width: '100%'}}
+                                    disabled={disabled}
+                                />
+                            </Box>
+                            <Box className='box-lesion'>
+                                <Typography className='name'>Pustule: </Typography> 
+                                <TextField 
+                                    name='pustules'
+                                    label='' 
+                                    variant='standard'
+                                    value={formData.pustules}
+                                    onChange={handleChange}
+                                    sx={{width: '100%'}}
+                                    disabled={disabled}
+                                />
+                            </Box>
+                            <Box className='box-lesion'>
+                                <Typography className='name'>Noduli: </Typography> 
+                                <TextField 
+                                    name='nodules'
+                                    label='' 
+                                    variant='standard'
+                                    value={formData.nodules}
+                                    onChange={handleChange}
+                                    sx={{width: '100%'}}
+                                    disabled={disabled}
+                                />
+                            </Box>
+                            <Box className='box-lesion'>
+                                <Typography className='name'>Chisturi: </Typography> 
+                                <TextField 
+                                    name='cysts'
+                                    label='' 
+                                    variant='standard'
+                                    value={formData.cysts}
+                                    onChange={handleChange}
+                                    sx={{width: '100%'}}
+                                    disabled={disabled}
+                                />
+                            </Box>
+                        </Grid>
+                        <Grid item xs={12} py={2}>
+                            <Typography pb={2} className='title'>Zone afectate</Typography>
+                            <TextField 
+                                name='affected_areas'
+                                multiline 
+                                placeholder='Introduceți aici.....' 
+                                maxRows={4} 
+                                style={{width: '100%'}}
+                                value={formData.affected_areas}
+                                onChange={handleChange}
+                                disabled={disabled}
+                            />
+                        </Grid>
+                        <Grid item xs={12} py={2}>
+                            <Typography pb={2} className='title'>Modificări observate</Typography>
+                            <TextField 
+                                name='observed_changes'
+                                multiline 
+                                placeholder='Introduceți aici.....' 
+                                maxRows={4} 
+                                style={{width: '100%'}}
+                                value={formData.observed_changes}
+                                onChange={handleChange}
+                                disabled={disabled}
+                            />
+                        </Grid>
+                        <Grid item xs={12} py={2}>
+                            <Typography pb={2} className='title'>Reacții adverse raportate</Typography>
+                            <TextField 
+                                name='adverse_reactions'
+                                multiline 
+                                placeholder='Introduceți aici.....' 
+                                maxRows={4} 
+                                style={{width: '100%'}}
+                                value={formData.adverse_reactions}
+                                onChange={handleChange}
+                                disabled={disabled}
+                            />
+                        </Grid>
+                        <Grid item xs={12} py={2}>
+                            <Typography pb={2} className='title'>Nivelul de durere/discomfort (scala 1-10)</Typography>
+                                <Box px={10}>
+                                    <Slider
+                                        name='discomfort_level'
+                                        defaultValue={1}
+                                        value={formData.discomfort_level}
                                         onChange={handleChange}
+                                        step={1}
+                                        valueLabelDisplay='auto'
+                                        marks={discomfort_level}
+                                        min={1}
+                                        max={10}
                                         disabled={disabled}
                                     />
-                                </Grid>
-                                <Grid item xs={12} py={2}>
-                                    <Typography pb={2} className='title'>Modificări observate</Typography>
-                                    <TextField 
-                                        name='observed_changes'
-                                        multiline 
-                                        placeholder='Introduceți aici.....' 
-                                        maxRows={4} 
-                                        style={{width: '100%'}}
-                                        value={formData.observed_changes}
-                                        onChange={handleChange}
-                                        disabled={disabled}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} py={2}>
-                                    <Typography pb={2} className='title'>Reacții adverse raportate</Typography>
-                                    <TextField 
-                                        name='adverse_reactions'
-                                        multiline 
-                                        placeholder='Introduceți aici.....' 
-                                        maxRows={4} 
-                                        style={{width: '100%'}}
-                                        value={formData.adverse_reactions}
-                                        onChange={handleChange}
-                                        disabled={disabled}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} py={2}>
-                                    <Typography pb={2} className='title'>Nivelul de durere/discomfort (scala 1-10)</Typography>
-                                        <Box px={10}>
-                                            <Slider
-                                                name='discomfort_level'
-                                                defaultValue={1}
-                                                value={formData.discomfort_level}
-                                                onChange={handleChange}
-                                                step={1}
-                                                valueLabelDisplay='auto'
-                                                marks={discomfort_level}
-                                                min={1}
-                                                max={10}
-                                                disabled={disabled}
-                                            />
-                                        </Box>
-                                </Grid>
-                                <Grid item xs={12} py={2}>
-                                    <Typography pb={2} className='title'>Impactul asupra calității vieții (scala 1-10)</Typography>
-                                    <Box px={10}>
-                                        <Slider
-                                            defaultValue={1}
-                                            name='quality_life_level'
-                                            value={formData.quality_life_level}
-                                            onChange={handleChange}
-                                            step={1}
-                                            valueLabelDisplay='auto'
-                                            marks={quality_life_level}
-                                            min={1}
-                                            max={10}
-                                            disabled={disabled}
-                                        />
-                                    </Box>
-                                </Grid>
-                                <Grid item xs={12} className='grid-title' p={2} mt={2}>
-                                    <Typography className='title'>Observații suplimentare (medic)</Typography>
-                                </Grid>
-                                <Grid item xs={12} py={2}>
-                                    <TextField 
-                                        name='doctor_observations'
-                                        multiline 
-                                        placeholder='Introduceți aici.....' 
-                                        maxRows={4} 
-                                        style={{width: '100%'}}
-                                        value={formData.doctor_observations}
-                                        onChange={handleChange}
-                                        disabled={disabled}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} className='grid-title' p={2}>
-                                    <Typography className='title'>Observațiile pacientului</Typography>
-                                </Grid>
-                                <Grid item xs={12} py={2}>
-                                    <TextField 
-                                        name='patient_observations'
-                                        multiline 
-                                        placeholder='Introduceți aici.....' 
-                                        maxRows={4} 
-                                        style={{width: '100%'}}
-                                        value={formData.patient_observations}
-                                        onChange={handleChange}
-                                        disabled={disabled}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} className='grid-button' pt={2} pb={2}>
+                                </Box>
+                        </Grid>
+                        <Grid item xs={12} py={2}>
+                            <Typography pb={2} className='title'>Impactul asupra calității vieții (scala 1-10)</Typography>
+                            <Box px={10}>
+                                <Slider
+                                    defaultValue={1}
+                                    name='quality_life_level'
+                                    value={formData.quality_life_level}
+                                    onChange={handleChange}
+                                    step={1}
+                                    valueLabelDisplay='auto'
+                                    marks={quality_life_level}
+                                    min={1}
+                                    max={10}
+                                    disabled={disabled}
+                                />
+                            </Box>
+                        </Grid>
+                        <Grid item xs={12} className='grid-title' p={2} mt={2}>
+                            <Typography className='title'>Observații suplimentare (medic)</Typography>
+                        </Grid>
+                        <Grid item xs={12} py={2}>
+                            <TextField 
+                                name='doctor_observations'
+                                multiline 
+                                placeholder='Introduceți aici.....' 
+                                maxRows={4} 
+                                style={{width: '100%'}}
+                                value={formData.doctor_observations}
+                                onChange={handleChange}
+                                disabled={disabled}
+                            />
+                        </Grid>
+                        <Grid item xs={12} className='grid-title' p={2}>
+                            <Typography className='title'>Observațiile pacientului</Typography>
+                        </Grid>
+                        <Grid item xs={12} py={2}>
+                            <TextField 
+                                name='patient_observations'
+                                multiline 
+                                placeholder='Introduceți aici.....' 
+                                maxRows={4} 
+                                style={{width: '100%'}}
+                                value={formData.patient_observations}
+                                onChange={handleChange}
+                                disabled={disabled}
+                            />
+                        </Grid>
+                        <Grid item xs={12} className='grid-button' pt={2} pb={2}>
+                            {
+                                !disabled &&
+                                <>
                                     <Button variant='contained' className='save-button' onClick={() => {addMedicalRecord()}}>SALVEAZĂ</Button>
                                     <Button variant='outlined' className='cancel-button' onClick={() => {navigate(`/patients/${param.uuid_patient}`)}}>ANULEAZĂ</Button>
-                                </Grid>
-                            </Paper>
+                                </>
+                            }
                         </Grid>
-                    </Grid>
+                    </Paper>
                 </Grid>
-            )
-        }
-        </>
+            </Grid>
+        </Grid>
     );
 }
 

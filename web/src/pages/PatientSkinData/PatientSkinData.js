@@ -3,7 +3,7 @@ import SideBar from '../../components/SideBar/SideBar.js';
 import NavBar from '../../components/NavBar/NavBar.js';
 import './PatientSkinData.scss';
 import {Grid, Typography, Button, Box, TextField, LinearProgress, Paper, IconButton, Tooltip, Radio, RadioGroup, FormControlLabel, FormControl} from '@mui/material';
-import {ArrowForwardIos as ArrowForwardIosIcon} from '@mui/icons-material';
+import {Undo as UndoIcon} from '@mui/icons-material';
 import axios from 'axios';
 import {useParams, useNavigate} from 'react-router-dom';
 import CustomAlert from '../../components/CustomAlert/CustomAlert.js';
@@ -58,29 +58,6 @@ function PatientSkinData()
         {value: 'cystic', label: 'Chistică'}
     ];
 
-    const fetchPatient = () => {
-        axios.get(`http://localhost:3001/patient-skin-data/patient-name/${param.uuid_patient}`,
-        {
-            headers:{
-                'authorization': `Bearer ${token}`
-            }
-        })
-        .then((response) => {
-            if(response.status === 200)
-            {
-                setPatient(response.data);
-                setIsLoading(false);
-            }
-        })
-        .catch((error) => {
-            setAlert({
-                severity: 'error',
-                text: 'A intervenit o eroare. Vă rugăm să încercați mai târziu.'
-            });
-            setIsLoading(false);
-        });
-    }
-
     const fetchSkinData = () => {
         axios.get(`http://localhost:3001/patient-skin-data/data/${param.uuid_patient}`,
         {
@@ -94,12 +71,14 @@ function PatientSkinData()
                 setFormData(response.data);
                 setAddMode(false);
                 setDisabled(true);
+                setIsLoading(false);
             }
         })
         .catch((error) => {
             if(error.response.status === 404)
             {
                 setAddMode(true);
+                setIsLoading(false);
             }
             else
             {
@@ -107,6 +86,7 @@ function PatientSkinData()
                     severity: 'error',
                     text: 'A intervenit o eroare. Vă rugăm să încercați mai târziu.'
                 });
+                setIsLoading(false);
             }
         });
     }
@@ -196,7 +176,6 @@ function PatientSkinData()
     }
 
     useEffect(() => {
-        fetchPatient();
         fetchSkinData();
     }, []);
 
@@ -218,9 +197,7 @@ function PatientSkinData()
                         <NavBar title=''/>
                         <Grid item xs={12} className='grid-item-path'>
                             <Typography className='path'>
-                                Pacienți <ArrowForwardIosIcon className='arrow-icon'/>
-                                {patient.lastname.toUpperCase()} {patient.firstname} <ArrowForwardIosIcon className='arrow-icon'/>
-                                FIȘĂ DE EVALUARE
+                                <Button startIcon={<UndoIcon/>} variant='contained' onClick={() => {navigate(`/patients/${param.uuid_patient}`)}}>Înapoi</Button>
                             </Typography>
                         </Grid>
                         <Grid container className='grid-container'>
