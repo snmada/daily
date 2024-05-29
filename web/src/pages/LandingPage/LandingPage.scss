@@ -1,0 +1,113 @@
+$white-color: #FBFBFB;
+
+.landing-page{
+    height: 100vh;
+    display: flex;
+    background-color: $white-color;
+
+    .appbar{
+        background-color: $white-color;
+        padding: 15px 35px;
+
+        .logo{
+            color: #191919;
+            font-size: 30px;
+            flex-grow: 1;
+        }
+
+        .button{
+            color: #191919;
+            border-color: #6961A8;
+            border-bottom: 4px solid #6961A8;
+
+            .login-icon{
+                color: #6961A8;
+            }
+        }
+    }
+
+    .content{
+        align-items: center;
+        display: flex;
+
+        .left-content{
+            justify-content: center;
+            display: flex;
+
+            .paper{
+                padding: 20px;
+                width: 650px;
+                background-color: $white-color;
+                
+                .title{
+                    font-size: 35px;
+                    font-weight: bold;
+                    word-spacing: 10px;
+                }
+
+                .box-item{
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 20px;
+                   
+                    .task-icon{
+                        font-size: 2rem;
+                        margin-right: 20px;
+                        color: rgb(62, 175, 33);
+                    }
+    
+                    .text-item{
+                        font-size: 18px;
+
+                        .span{
+                            display: flex;
+                            align-items: center;
+
+                            .language-icon{
+                                margin-left: 5px;
+                                margin-right: 5px;
+                            }
+                        }
+                    }
+                }
+
+                .box-register{
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-end;
+
+                    .button-register{
+                        background-color: #6961A8;
+                    }
+
+                    .swipe-icon{
+                        color: #6961A8;
+                        margin-top: 10px;
+                        font-size: 3rem;
+                        animation: shake 5s ease-in-out infinite;
+
+                        @keyframes shake{
+                            0% {transform: translateY(0)}
+                            25% {transform: translateY(-5px)}
+                            50% {transform: translateY(5px)}
+                            75% {transform: translateY(-5px)}
+                            100% {transform: translateY(0)}
+                        }
+                    }
+                }
+            }
+        }
+
+        .right-content{
+            .image{
+                width: 500px;
+                height: 420px;
+            }
+        }
+    }
+
+    .svg-wave{
+        position: absolute;
+        bottom: 0;
+    }
+}

@@ -73,12 +73,12 @@ $white-color: #FBFBFB;
 
                 .button-next{
                     @include button-style;
-                    background-color: #c0e8dc;
+                    background-color: #BFDCE5;
                 }
 
                 .button-prev{
                     @include button-style;
-                    background-color: #D6E4E5;
+                    background-color: #ebebeb;
                     display: flex;
                     justify-content: center;
                     width: 20px;
