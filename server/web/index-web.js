@@ -29,4 +29,7 @@ app.use('/dashboard', dashboardRoute);
 const patientMedicalRecordRoute = require('./patient-medical-record/patient-medical-record.js');
 app.use('/patient-medical-record', patientMedicalRecordRoute);
 
+const resetPasswordRoute = require('./reset-password/reset-password.js');
+app.use('/reset-password', resetPasswordRoute);
+
 module.exports = app;

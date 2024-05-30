@@ -91,6 +91,9 @@ function SignIn()
                                     />
                                     <Typography className='error'>{errors.password?.message}</Typography>
                                 </Grid>
+                                <Grid item xs={12} pt={1} >
+                                    <Typography className='forgot-password-link' onClick={() => {navigate('/reset-password')}}>Nu-mi amintesc parola</Typography>
+                                </Grid>
                                 {errorMessage && <Alert severity='error' sx={{width: '100%'}}>{errorMessage}</Alert>}
                                 <Grid item xs={12} py={3}>
                                     <button type='submit' className='submit-button'>Intră în cont</button>
