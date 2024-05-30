@@ -41,7 +41,22 @@ function PatientProfile()
         .then((response) => {
             if(response.status === 200)
             {
-                setMedicalRecords(response.data);
+                let medRecords = response.data;
+
+                medRecords.sort((a, b) => {
+                    const dateA = new Date(a.created_on);
+                    const dateB = new Date(b.created_on);
+
+                    if(dateA > dateB) return -1;
+                    if(dateA < dateB) return 1;
+
+                    if(a.id_medical_record > b.id_medical_record) return -1;
+                    if(a.id_medical_record < b.id_medical_record) return 1;
+
+                    return 0;
+                });
+
+                setMedicalRecords(medRecords);
                 setIsLoading(false);
             }
         })

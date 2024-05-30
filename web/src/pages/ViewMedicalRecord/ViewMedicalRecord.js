@@ -38,7 +38,7 @@ function ViewMedicalRecord()
 
 
     const fetchMedicalRecord = () => {
-        axios.get(`http://localhost:3001/patient-medical-record/data/${param.uuid_patient}`,
+        axios.get(`http://localhost:3001/patient-medical-record/med-record/${param.uuid_patient}/${param.id_medical_record}`,
         {
             headers:{
                 'authorization': `Bearer ${token}`
