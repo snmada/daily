@@ -71,7 +71,7 @@ router.get('/medical-records/:id', authenticateToken, (req, res) => {
         `SELECT p.uuid_patient, p.lastname, p.firstname, mr.id_medical_record, 
         DATE_FORMAT(mr.created_on, "%d/%m/%Y") as created_on FROM patients p
         LEFT JOIN medical_records mr ON p.uuid_patient = mr.uuid_patient
-        WHERE p.uuid_doctor = ? AND (mr.deleted_on IS NULL)`, req.params.id,
+        WHERE p.uuid_doctor = ? AND (mr.deleted_on IS NULL) AND p.uuid_patient = mr.uuid_patient`, req.params.id,
         (error, result) => {
             if(error)
             {
