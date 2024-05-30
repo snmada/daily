@@ -42,11 +42,11 @@ router.post('/add', authenticateToken, (req, res) => {
     db.query(
         `INSERT INTO medical_records  
         (uuid_patient, comedones, papules, pustules, nodules, cysts, affected_areas, observed_changes, 
-        adverse_reactions, discomfort_level, quality_life_level, doctor_observations, patient_observations, created_on)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+        adverse_reactions, discomfort_level, quality_life_level, doctor_observations, patient_observations, created_on, recommendation)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?)`,
         [req.body.uuid_patient, req.body.comedones, req.body.papules, req.body.pustules, req.body.nodules, 
             req.body.cysts, req.body.affected_areas, req.body.observed_changes, req.body.adverse_reactions, 
-            req.body.discomfort_level, req.body.quality_life_level, req.body.doctor_observations, req.body.patient_observations],
+            req.body.discomfort_level, req.body.quality_life_level, req.body.doctor_observations, req.body.patient_observations, req.body.recommendation],
         (error, result) => {
             if(error)
             {

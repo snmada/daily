@@ -306,6 +306,20 @@ function ViewMedicalRecord()
                                         disabled
                                     />
                                 </Grid>
+                                <Grid item xs={12} py={2}>
+                                    <Typography className='title'>Recomandări</Typography>
+                                    <TextField 
+                                        sx={{
+                                            '& .MuiInputBase-input.Mui-disabled': {
+                                              WebkitTextFillColor: '#003285',
+                                            },
+                                            width: '100%',
+                                        }}
+                                        value={medicalRecord.recommendation}
+                                        variant='standard'
+                                        disabled
+                                    />
+                                </Grid>
                                 <Grid item xs={12} className='grid-button' pt={2} pb={2}>
                                     {!disabled && <Button variant='outlined' className='delete-button' startIcon={<DeleteIcon sx={{color: '#F52A2A'}}/>} onClick={handleOpenConfirmDialog}>ȘTERGE</Button>}
                                 </Grid>

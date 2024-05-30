@@ -10,7 +10,7 @@ import CustomAlert from '../../components/CustomAlert/CustomAlert.js';
 
 const initialState = {
     comedones: '', papules: '', pustules: '', nodules: '', cysts: '', affected_areas: '', observed_changes: '', 
-    adverse_reactions: '', discomfort_level: '', quality_life_level: '', doctor_observations: '', patient_observations: ''
+    adverse_reactions: '', discomfort_level: '', quality_life_level: '', doctor_observations: '', patient_observations: '', recommendation: ''
 };
 
 function MedicalRecord()
@@ -19,7 +19,7 @@ function MedicalRecord()
     const param = useParams();
     const [formData, setFormData] = useState(
         {comedones: '', papules: '', pustules: '', nodules: '', cysts: '', affected_areas: '', observed_changes: '', 
-        adverse_reactions: '', discomfort_level: '', quality_life_level: '', doctor_observations: '', patient_observations: ''}
+        adverse_reactions: '', discomfort_level: '', quality_life_level: '', doctor_observations: '', patient_observations: '', recommendation: ''}
     );
     const handleChange = (event) => setFormData({...formData, [event.target.name]: event.target.value});
     const token = sessionStorage.getItem('token');
@@ -59,7 +59,8 @@ function MedicalRecord()
                 discomfort_level: formData.discomfort_level, 
                 quality_life_level: formData.quality_life_level, 
                 doctor_observations: formData.doctor_observations, 
-                patient_observations: formData.patient_observations
+                patient_observations: formData.patient_observations,
+                recommendation: formData.recommendation
             },
             {
                 headers:{
@@ -290,6 +291,21 @@ function MedicalRecord()
                                 maxRows={4} 
                                 style={{width: '100%'}}
                                 value={formData.patient_observations}
+                                onChange={handleChange}
+                                disabled={disabled}
+                            />
+                        </Grid>
+                        <Grid item xs={12} className='grid-title' p={2}>
+                            <Typography className='title'>Recomandări</Typography>
+                        </Grid>
+                        <Grid item xs={12} py={2}>
+                            <TextField 
+                                name='recommendation'
+                                multiline 
+                                placeholder='Introduceți aici.....' 
+                                maxRows={4} 
+                                style={{width: '100%'}}
+                                value={formData.recommendation}
                                 onChange={handleChange}
                                 disabled={disabled}
                             />
