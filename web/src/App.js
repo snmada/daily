@@ -6,6 +6,8 @@ import Dashboard from './pages/Dashboard/Dashboard.js';
 import Patient from './pages/Patient/Patient.js';
 import PatientProfile from './pages/PatientProfile/PatientProfile.js';
 import PatientSkinData from './pages/PatientSkinData/PatientSkinData.js';
+import MedicalRecord from './pages/MedicalRecord/MedicalRecord.js';
+import ViewMedicalRecord from './pages/ViewMedicalRecord/ViewMedicalRecord.js';
 
 function App() {
     return (
@@ -18,6 +20,8 @@ function App() {
                 <Route exact path='/patients' element={<Patient/>}/>
                 <Route exact path='/patients/:uuid_patient' element={<PatientProfile/>}/>
                 <Route exact path='/patients/:uuid_patient/skin-data' element={<PatientSkinData/>}/>
+                <Route exact path='/patients/:uuid_patient/medical-record' element={<MedicalRecord/>}/>
+                <Route exact path='/patients/:uuid_patient/view-medical-record/:id_medical_record' element={<ViewMedicalRecord/>}/>
             </Routes>
         </BrowserRouter>
     );

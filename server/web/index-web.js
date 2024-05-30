@@ -26,4 +26,7 @@ app.use('/patient-skin-data', patientSkinDataRoute);
 const dashboardRoute = require('./dashboard/dashboard.js');
 app.use('/dashboard', dashboardRoute);
 
+const patientMedicalRecordRoute = require('./patient-medical-record/patient-medical-record.js');
+app.use('/patient-medical-record', patientMedicalRecordRoute);
+
 module.exports = app;

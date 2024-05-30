@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Grid, Typography, Stepper, Step, StepLabel} from '@mui/material';
+import {Grid, Typography, Stepper, Step, StepLabel, Box, Skeleton} from '@mui/material';
 import SideBar from '../../components/SideBar/SideBar.js';
 import NavBar from '../../components/NavBar/NavBar.js';
 import './Dashboard.scss';
@@ -16,15 +16,20 @@ import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import {PieChart} from '@mui/x-charts/PieChart';
 import {BarChart} from '@mui/x-charts/BarChart';
 import axios from 'axios';
+import {useNavigate} from 'react-router-dom';
 
 function Dashboard()
 {
+    const navigate = useNavigate();
     const token = sessionStorage.getItem('token');
     const decodedToken = jwtDecode(sessionStorage.getItem('token'));
     const [name, setName] = useState('');
     const [currentTime, setCurrentTime] = useState(new Date().getHours());
     const [greeting, setGreeting] = useState('');
     const [data, setData] = useState({});
+    const [medicalRecords, setMedicalRecords] = useState([]);
+    const [totalMR, setTotalMR] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         setName(decodedToken.firstname + ' ' + decodedToken.lastname);
@@ -53,12 +58,6 @@ function Dashboard()
         return () => clearInterval(interval);
     }, []);
 
-    const [patientConsultations, setPatientConsultations] = useState([
-        {date: '23-10-2021'},
-        {date: '22-09-2021'},
-        {date: '19-08-2021'}
-    ]);
-
     const dataset = [
         {
             female: data.totalFRosacea,
@@ -84,6 +83,7 @@ function Dashboard()
 
     useEffect(() => {
         fetchData();
+        fetchMedicalRecords();
     }, [])
 
     const fetchData = () => {
@@ -97,6 +97,46 @@ function Dashboard()
             if(response.status === 200)
             {
                 setData(response.data);
+            }
+        })
+        .catch((error) => {
+            (error.response.status === 500) && alert('A intervenit o eroare. Vă rugăm să încercați mai târziu.');
+        });
+    }
+
+    const fetchMedicalRecords = () => {
+        axios.get(`http://localhost:3001/dashboard/medical-records/${decodedToken.uuid_doctor}`,
+        {
+            headers:{
+                'authorization': `Bearer ${token}`
+            }
+        })
+        .then((response) => {
+            if(response.status === 200)
+            {
+                setTotalMR(response.data.length);
+                let medRecords = response.data;
+
+                medRecords.sort((a, b) => {
+                    const dateA = new Date(a.created_on);
+                    const dateB = new Date(b.created_on);
+
+                    if(dateA > dateB) return -1;
+                    if(dateA < dateB) return 1;
+
+                    if(a.id_medical_record > b.id_medical_record) return -1;
+                    if(a.id_medical_record < b.id_medical_record) return 1;
+
+                    return 0;
+                });
+
+                if(medRecords.length >= 5)
+                {
+                    medRecords = medRecords.slice(0, 5);
+                }
+
+                setMedicalRecords(medRecords);
+                setIsLoading(false);
             }
         })
         .catch((error) => {
@@ -147,7 +187,7 @@ function Dashboard()
                                             <ContentPasteIcon className='icon'/>
                                         </Grid>
                                         <Grid item xs={12}><h2>Consultații</h2></Grid>
-                                        <Grid item xs={12}><h1>123</h1></Grid>
+                                        <Grid item xs={12}><h1>{totalMR}</h1></Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -226,17 +266,39 @@ function Dashboard()
                                 <div className='div-consultation'>
                                     <Typography pb={3}>Consultații recente</Typography>
                                     <Stepper orientation='vertical'>
-                                        {patientConsultations.map((consultation, index) => (
-                                            <Step key={index}>
-                                                <StepLabel StepIconComponent={ContentPasteIcon}>
-                                                    <Grid container>
-                                                        <Grid item xs={10}>
-                                                            <Typography>Data: {consultation.date}</Typography>
-                                                        </Grid>
-                                                    </Grid>
-                                                </StepLabel>
-                                            </Step>
-                                        ))}
+                                        {
+                                            !isLoading?
+                                            (
+                                                medicalRecords.length !== 0? 
+                                                (
+                                                    medicalRecords.map((medicalRecord, index) => (
+                                                        <Step key={index}>
+                                                            <StepLabel StepIconComponent={ContentPasteIcon} onClick={() => navigate(`/patients/${medicalRecord.uuid_patient}/view-medical-record/${medicalRecord.id_medical_record}`)}>
+                                                                <Grid container sx={{cursor: 'pointer'}}>
+                                                                    <Grid item xs={10}>
+                                                                        <Typography>Data: {medicalRecord.created_on}</Typography>
+                                                                        <Typography>Pacient: {medicalRecord.lastname} {medicalRecord.firstname}</Typography>
+                                                                    </Grid>
+                                                                </Grid>
+                                                            </StepLabel>
+                                                        </Step>
+                                                    ))
+                                                ) 
+                                                : 
+                                                (
+                                                    <Box className='no-data-box'>
+                                                        <Typography sx={{color: '#61677A'}} pb={2}>Nu există consultații</Typography>
+                                                    </Box>
+                                                )
+                                            )
+                                            :
+                                            (
+                                                <>
+                                                    <Skeleton animation='wave'/>
+                                                    <Skeleton width={250}/>
+                                                </>
+                                            )
+                                        }
                                     </Stepper>
                                 </div>
                             </Grid>
