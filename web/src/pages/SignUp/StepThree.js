@@ -106,7 +106,7 @@ function StepThree({formData, handleChange, handlePrevStep})
                         {...register('password')} 
                         value={formData.password} 
                         name='password' 
-                        label='Password' 
+                        label='Parola' 
                         variant='outlined' 
                         onChange={handleChange} 
                         fullWidth
@@ -125,7 +125,7 @@ function StepThree({formData, handleChange, handlePrevStep})
                         {...register('confirmPassword')} 
                         value={formData.confirmPassword} 
                         name='confirmPassword' 
-                        label='Confirm password' 
+                        label='Confirmă parola' 
                         variant='outlined' 
                         onChange={handleChange} 
                         fullWidth
@@ -141,13 +141,13 @@ function StepThree({formData, handleChange, handlePrevStep})
                     <Typography className='error'>{errors.confirmPassword?.message}</Typography>
                 </Grid>
                 <div className='password-requirements'>
-                    <p>Password must have at least: </p>
+                    <p>Parola trebuie să conțină cel puțin: </p>
                     <ul>
-                        <li id='length'>8 characters</li>
-                        <li id='lower-letter'>one lowercase character</li>
-                        <li id='capital-letter'>one uppercase character</li>
-                        <li id='digit'>one digit</li>
-                        <li id='special-char'>one special character .!?-</li>
+                        <li id='length'>8 caractere</li>
+                        <li id='lower-letter'>o literă mică</li>
+                        <li id='capital-letter'>o literă mare</li>
+                        <li id='digit'>o cifră</li>
+                        <li id='special-char'>un caracter special.!?-</li>
                     </ul>
                 </div>
                 <Grid item xs={6} py={2}>
