@@ -1,10 +1,10 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, ImageBackground, Alert, TouchableWithoutFeedback} from 'react-native';
+import {View, Text, StyleSheet, ImageBackground, Alert, TouchableWithoutFeedback, Modal, TouchableOpacity} from 'react-native';
 import BottomBar from '../components/BottomBar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faGear, faPills, faImages, faListCheck} from '@fortawesome/free-solid-svg-icons';
+import {faGear, faPills, faImages, faListCheck, faX} from '@fortawesome/free-solid-svg-icons';
 import firstBoxImage from '../images/firstBox.png';
 import secondBoxImage from '../images/secondBox.png';
 import thirdBoxImage from '../images/thirdBox.png';
@@ -15,6 +15,9 @@ export default function Home()
 {
     const [user, setUser] = useState({});
     const navigation = useNavigation();
+    const [modalVisible, setModalVisible] = useState(false);
+    const [recommendation, setRecommendation] = useState('');
+    const [uuidPatient, setUuidPatient] = useState('');
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -23,6 +26,7 @@ export default function Home()
 
                 if(uuid_patient !== null) 
                 {
+                    setUuidPatient(uuid_patient);
                     axios.get(`http://${process.env.IP_ADDRESS}:8082/home/user-data/${uuid_patient}`)
                     .then((response) => {
                         if(response.status === 200)
@@ -41,6 +45,20 @@ export default function Home()
         };
         fetchUserData();
     }, []);
+
+    const fetchRecommendation = () => {
+        axios.get(`http://${process.env.IP_ADDRESS}:8082/home/recommendation/${uuidPatient}`)
+        .then((response) => {
+            if(response.status === 200)
+            {
+                setModalVisible(true);
+                setRecommendation(response.data);
+            }
+        })
+        .catch((error) => {
+            Alert.alert('A intervenit o eroare. Vă rugăm să încercați mai târziu.');
+        });     
+    }
 
     return(
         <View style={styles.container}>
@@ -72,7 +90,7 @@ export default function Home()
                     </TouchableWithoutFeedback>
                 </View>
                 <View style={styles.box}>
-                    <TouchableWithoutFeedback onPress={() => navigation.navigate('Recommendation')}>
+                    <TouchableWithoutFeedback onPress={() => fetchRecommendation()}>
                         <ImageBackground source={thirdBoxImage} style={styles.imageBackground}>
                             <Text style={styles.textBox}>Recomandările medicului</Text>
                             <View style={styles.boxIcon}>
@@ -93,6 +111,17 @@ export default function Home()
                 </View> 
             </View>
             <BottomBar/>
+            <Modal animationType='slide' transparent={true} visible={modalVisible} onRequestClose={() => {setModalVisible(!modalVisible)}}>
+                <View style={styles.centeredView}>
+                    <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(!modalVisible)}>
+                        <FontAwesomeIcon icon={faX} size={15} style={{color: '#FBFBFB'}}/>
+                    </TouchableOpacity>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalTitle}>Recomandări</Text>
+                        <Text style={styles.modalText}>{recommendation}</Text>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }
@@ -152,5 +181,37 @@ const styles = StyleSheet.create({
         backgroundColor: '#EEEEEE',
         borderRadius: 10,
         elevation: 4
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 20,
+        right: 20,
+        padding: 10,
+        backgroundColor: '#191919',
+        borderRadius: 5
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)'
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center'
+    },
+    modalTitle: {
+        marginBottom: 35,
+        textAlign: 'center',
+        fontSize: 24,
+        fontWeight: 'bold'
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+        fontSize: 18
     }
 });
