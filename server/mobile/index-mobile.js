@@ -14,4 +14,7 @@ app.use('/signin', signinRoute);
 const homeRoute = require('./home/home.js');
 app.use('/home', homeRoute);
 
+const resetPasswordRoute = require('./reset-password/reset-password.js');
+app.use('/reset-password', resetPasswordRoute);
+
 module.exports = app;
