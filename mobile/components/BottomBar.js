@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faHouseChimneyUser, faNewspaper, faImage} from '@fortawesome/free-solid-svg-icons'; 
+import {faHouseChimneyUser, faImages, faPills} from '@fortawesome/free-solid-svg-icons'; 
 import {useNavigation} from '@react-navigation/native';
 
 export default function BottomBar()
@@ -11,14 +11,14 @@ export default function BottomBar()
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.navigate('Gallery')} style={styles.button}>
-                <FontAwesomeIcon icon={faNewspaper} size={20} style={styles.icon}/>
+                <FontAwesomeIcon icon={faPills} size={20} style={styles.icon}/>
                 <Text style={styles.buttonText}>Tratament</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('Home')} style={styles.buttonHome}>
                 <FontAwesomeIcon icon={faHouseChimneyUser} size={25} style={styles.iconHome}/>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('Gallery')} style={styles.button}>
-                <FontAwesomeIcon icon={faImage} size={20} style={styles.icon}/>
+                <FontAwesomeIcon icon={faImages} size={20} style={styles.icon}/>
                 <Text style={styles.buttonText}>Galerie</Text>
             </TouchableOpacity>
         </View>

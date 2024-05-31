@@ -11,4 +11,7 @@ app.use('/signup', signupRoute);
 const signinRoute = require('./signin/signin.js');
 app.use('/signin', signinRoute);
 
+const homeRoute = require('./home/home.js');
+app.use('/home', homeRoute);
+
 module.exports = app;
