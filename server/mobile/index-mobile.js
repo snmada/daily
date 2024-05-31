@@ -17,4 +17,7 @@ app.use('/home', homeRoute);
 const resetPasswordRoute = require('./reset-password/reset-password.js');
 app.use('/reset-password', resetPasswordRoute);
 
+const treatmentRoute = require('./treatment/treatment.js');
+app.use('/treatment', treatmentRoute);
+
 module.exports = app;

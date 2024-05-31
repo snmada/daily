@@ -10,7 +10,7 @@ export default function BottomBar()
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => navigation.navigate('Gallery')} style={styles.button}>
+            <TouchableOpacity onPress={() => navigation.navigate('Treatment')} style={styles.button}>
                 <FontAwesomeIcon icon={faPills} size={20} style={styles.icon}/>
                 <Text style={styles.buttonText}>Tratament</Text>
             </TouchableOpacity>

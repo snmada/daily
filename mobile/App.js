@@ -6,6 +6,7 @@ import Home from './screens/Home.js';
 import Gallery from './screens/Gallery.js';
 import UploadImage from './screens/UploadImage.js';
 import ResetPassword from './screens/ResetPassword.js';
+import Treatment from './screens/Treatment.js';
 
 const Stack = createStackNavigator();
 
@@ -20,6 +21,7 @@ export default function App()
                 <Stack.Screen name='Gallery' component={Gallery}/>
                 <Stack.Screen name='UploadImage' component={UploadImage}/>
                 <Stack.Screen name='Settings' component={ResetPassword}/>
+                <Stack.Screen name='Treatment' component={Treatment}/>
             </Stack.Navigator>
         </NavigationContainer>
     );
