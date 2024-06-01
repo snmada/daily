@@ -42,6 +42,7 @@ export default function ResetPassword()
     });
 
     const onSubmitEmail = (data) => {
+        setEmail(data.email);
         axios.post(`http://${process.env.IP_ADDRESS}:8082/reset-password/generate-reset-code`, {
             email: data.email
         })
