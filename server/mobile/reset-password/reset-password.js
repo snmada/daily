@@ -3,15 +3,38 @@ const router = express.Router();
 const db = require('../../database/database.js');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
+const createTransporter = require('../../createTransporter.js');
 
 const generateResetCode = () => {
     const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let resetCode = '';
+    let resetCode = '', resetCode_exist = 0;
     for (let i = 0; i < 6; i++)
     {
         resetCode += characters[Math.floor(Math.random() * characters.length)];
     }
+    
+    do{
+        db.query(
+            'SELECT COUNT(*) AS count FROM reset_password_requests WHERE reset_code = ?', resetCode, 
+            (error, result) => {
+                if(error)
+                {
+                    res.status(500).send();
+                }
+                else
+                {
+                    result[0].count?  resetCode_exist = 1 : resetCode_exist = 0;
+                }
+            }
+        );
+    }while(resetCode_exist !== 0);
+
     return resetCode;
+}
+
+const sendEmail = async (emailOptions) => {
+    let transporter = await createTransporter();
+    await transporter.sendMail(emailOptions);
 }
 
 const formatDateTime = (date) => {
@@ -37,11 +60,25 @@ router.post('/generate-reset-code', (req, res) => {
             {
                 if(result.length)
                 {
-                    let resetCode, resetCode_exist = 0;
-                    do{
-                        resetCode = generateResetCode();
+                    const resetCode = generateResetCode();
+                    const now = new Date(); 
+                    const expirationTime = new Date(now.getTime() + (5 * 60 * 1000)); 
+
+                    const generatedAt = formatDateTime(now);
+                    const expiresAt = formatDateTime(expirationTime);
+
+                    sendEmail({
+                        from: process.env.USER_EMAIL,
+                        to: process.env.USER_EMAIL, //req.body.email,
+                        subject: 'Resetare parolă - DAILY',
+                        html: `
+                            <h2>Salut!</h2>
+                            <p style='font-size:16px'>Cod de resetare: ${resetCode}</p>
+                        `
+                    }).then(() => {
                         db.query(
-                            'SELECT COUNT(*) AS count FROM reset_password_requests WHERE reset_code = ?', resetCode, 
+                            `INSERT INTO reset_password_requests (email, reset_code, generated_at, expires_at)
+                            VALUES (?, ?, ?, ?)`, [req.body.email, resetCode, generatedAt, expiresAt],
                             (error, result) => {
                                 if(error)
                                 {
@@ -49,32 +86,18 @@ router.post('/generate-reset-code', (req, res) => {
                                 }
                                 else
                                 {
-                                    result[0].count?  resetCode_exist = 1 : resetCode_exist = 0;
+                                    result.affectedRows && res.status(200).send();
                                 }
                             }
                         );
-                    }while(resetCode_exist !== 0);
-
-                    const now = new Date(); 
-                    const expirationTime = new Date(now.getTime() + (5 * 60 * 1000)); 
-
-                    const generatedAt = formatDateTime(now);
-                    const expiresAt = formatDateTime(expirationTime);
-
-                    db.query(
-                        `INSERT INTO reset_password_requests (email, reset_code, generated_at, expires_at)
-                        VALUES (?, ?, ?, ?)`, [req.body.email, resetCode, generatedAt, expiresAt],
-                        (error, result) => {
-                            if(error)
-                            {
-                                res.status(500).send();
-                            }
-                            else
-                            {
-                                result.affectedRows && res.status(200).send();
-                            }
-                        }
-                    )
+                    }).catch((error) => {
+                        res.status(500).send();
+                        console.log(error);
+                    })
+                }
+                else
+                {
+                    res.status(200).send();
                 }
             }
         }
