@@ -3,22 +3,17 @@ const router = express.Router();
 const db = require('../../database/database.js');
 require('dotenv').config();
 const authenticateToken = require('../authenticateToken.js');
+const createTransporter = require('../../createTransporter.js');
 
 const generateAccessCode = () => {
     const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let accessCode = '';
+    let accessCode = '', accessCode_exist = 0;
     for (let i = 0; i < 6; i++)
     {
         accessCode += characters[Math.floor(Math.random() * characters.length)];
     }
-    return accessCode;
-}
-
-router.post('/send', authenticateToken, (req, res) => {
-    let accessCode, accessCode_exist = 0;
 
     do{
-        accessCode = generateAccessCode();
         db.query(
             'SELECT COUNT(*) AS count FROM patient_accounts WHERE accessCode = ?', accessCode, 
             (error, result) => {
@@ -34,6 +29,16 @@ router.post('/send', authenticateToken, (req, res) => {
         );
     }while(accessCode_exist !== 0);
 
+    return accessCode;
+}
+
+const sendEmail = async (emailOptions) => {
+    let transporter = await createTransporter();
+    await transporter.sendMail(emailOptions);
+}
+
+router.post('/send', authenticateToken, (req, res) => {
+    const accessCode = generateAccessCode();
     db.query(
         'SELECT * FROM patient_accounts WHERE uuid_patient = ?', req.body.uuid_patient, 
         (error, result) => {
@@ -43,32 +48,45 @@ router.post('/send', authenticateToken, (req, res) => {
             }
             else
             {
-                db.query(
-                    'UPDATE patient_accounts SET status = "Canceled" WHERE status = "Pending" AND uuid_patient = ?', req.body.uuid_patient,
-                    (error, result) => {
-                        if(error)
-                        {
-                            res.status(500).send();
+                if(result.length)
+                {
+                    db.query(
+                        'UPDATE patient_accounts SET status = "Canceled" WHERE status = "Pending" AND uuid_patient = ?', req.body.uuid_patient,
+                        (error, result) => {
+                            if(error)
+                            {
+                                res.status(500).send();
+                            }
                         }
-                        else
-                        {
-                            db.query(
-                                'INSERT INTO patient_accounts (uuid_patient, email, accessCode, created_on, status) VALUES (?, ?, ?, NOW(), "Pending")', 
-                                [req.body.uuid_patient, req.body.email, accessCode],
-                                (error, result) => {
-                                    if(error)
-                                    {
-                                        res.status(500).send();
-                                    }
-                                    else
-                                    {
-                                        result.affectedRows && res.status(200).send();
-                                    }
-                                }
-                            );
+                    );
+                }
+                sendEmail({
+                    from: process.env.USER_EMAIL,
+                    to: process.env.USER_EMAIL, //req.body.email,
+                    subject: 'Cod de acces - DAILY',
+                    html: `
+                        <h2>Salut!</h2>
+                        <p style='font-size:16px'>Cod de Acces: ${accessCode}</p>
+                    `
+                }).then(() => {
+                    db.query(
+                        'INSERT INTO patient_accounts (uuid_patient, email, accessCode, created_on, status) VALUES (?, ?, ?, NOW(), "Pending")', 
+                        [req.body.uuid_patient, req.body.email, accessCode],
+                        (error, result) => {
+                            if(error)
+                            {
+                                res.status(500).send();
+                            }
+                            else
+                            {
+                                result.affectedRows && res.status(200).send();
+                            }
                         }
-                    }
-                );
+                    );
+                }).catch((error) => {
+                    res.status(500).send();
+                    console.log(error);
+                })
             }
         }
     );
