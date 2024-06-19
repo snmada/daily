@@ -3,7 +3,6 @@ import SideBar from '../../components/SideBar/SideBar.js';
 import NavBar from '../../components/NavBar/NavBar.js';
 import './ViewMedicalRecord.scss';
 import {Grid, Typography, Button, Box, TextField, LinearProgress, Paper, Slider, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
-import {Undo as UndoIcon} from '@mui/icons-material';
 import axios from 'axios';
 import {useParams, useNavigate} from 'react-router-dom';
 import CustomAlert from '../../components/CustomAlert/CustomAlert.js';
@@ -128,11 +127,6 @@ function ViewMedicalRecord()
                     <SideBar/>
                     <Grid item className='main-content'>
                         <NavBar title=''/>
-                        <Grid item xs={12} className='grid-item-path'>
-                            <Typography className='path'>
-                                <Button startIcon={<UndoIcon/>} variant='contained' onClick={() => {navigate(`/patients/${param.uuid_patient}`)}}>Înapoi</Button>
-                            </Typography>
-                        </Grid>
                         <Grid container className='grid-container'>
                             <Paper elevation={5} className='paper'>
                                 <Typography sx={{textAlign: 'center', fontSize: '25px'}} pt={3}>CONSULTAȚIE</Typography>
@@ -334,8 +328,8 @@ function ViewMedicalRecord()
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions >
-                            <Button onClick={handleCloseConfirmDialog} variant='outlined'>ANULEAZĂ</Button>
-                            <Button onClick={() => deleteMedicalRecord()} sx={{color: '#F52A2A'}}>ȘTERGE</Button>
+                            <Button onClick={handleCloseConfirmDialog} variant='text' sx={{color: '#686D76'}}>ANULEAZĂ</Button>
+                            <Button onClick={() => deleteMedicalRecord()} variant='text' sx={{color: '#F52A2A', backgroundColor: '#FFEFEF'}}>ȘTERGE</Button>
                         </DialogActions>
                     </Dialog>
                 </Grid>

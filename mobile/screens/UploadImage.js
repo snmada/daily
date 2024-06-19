@@ -110,19 +110,16 @@ export default function UploadImage()
                                             {index === 0 && (
                                                 <>
                                                     <FontAwesomeIcon icon={faPlus} size={30} style={styles.addIcon}/>
-                                                    <Text style={styles.direction}>Frontal</Text>
                                                 </>
                                             )}
                                             {index === 1 && (
                                                 <>
                                                     <FontAwesomeIcon icon={faPlus} size={30} style={styles.addIcon}/>
-                                                    <Text style={styles.direction}>Lateral Stânga</Text>
                                                 </>
                                             )}
                                             {index === 2 && (
                                                 <>
                                                     <FontAwesomeIcon icon={faPlus} size={30} style={styles.addIcon}/>
-                                                    <Text style={styles.direction}>Lateral Dreapta</Text>
                                                 </>
                                             )}
                                         </View>

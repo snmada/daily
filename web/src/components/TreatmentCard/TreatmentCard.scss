@@ -113,17 +113,27 @@
 
         .save-button{
             margin-left: auto;
-            padding-left: 20px;
-            padding-right: 20px;
-        }
-    
-        .cancel-button{
-            color: #F52A2A;
             margin-left: 10px;
+            background-color: #6961A8;
+        }
+
+        .delete-button{
+            color: #F52A2A;
+            margin-left: auto;
             border-color: #F52A2A;
             :hover{
                 background-color: #FBFBFB;
                 border-color: #F52A2A;
+            }
+        }
+        
+        .cancel-button{
+            color: #686D76;
+            margin-left: 10px;
+            border-color: #686D76;
+            :hover{
+                background-color: #FBFBFB;
+                border-color: #686D76;
             }
         }
     }

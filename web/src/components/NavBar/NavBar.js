@@ -59,9 +59,7 @@ function NavBar({title})
                     <Typography sx={{flexGrow: 1, display: {xs: 'flex', md: 'flex', lg: 'none'}, color: 'black', fontSize: '20px'}}>DAILY</Typography>
                     
                     <Box sx={{flexGrow: 0, marginLeft: 'auto'}}>
-                        <Tooltip title='Account'>
-                            <IconButton onClick={handleOpenUserMenu}><Avatar sx={{background: '#9BB0C1'}}>{userInitials}</Avatar></IconButton>
-                        </Tooltip>
+                        {userInitials && <IconButton onClick={handleOpenUserMenu}><Avatar sx={{background: '#9BB0C1'}}>{userInitials}</Avatar></IconButton>}
                         <Menu
                             id='menu-user'
                             sx={{mt: '45px'}}

@@ -160,8 +160,8 @@ function AllergyCard({alert, setAlert})
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions >
-                    <Button onClick={handleCloseConfirmDialog} variant='outlined'>ANULEAZĂ</Button>
-                    <Button  onClick={() => deleteAllergy()} sx={{color: '#F52A2A'}}>ȘTERGE</Button>
+                    <Button onClick={handleCloseConfirmDialog} variant='text' sx={{color: '#686D76'}}>ANULEAZĂ</Button>
+                    <Button onClick={() => deleteAllergy()} variant='text' sx={{color: '#F52A2A', backgroundColor: '#FFEFEF'}}>ȘTERGE</Button>
                 </DialogActions>
             </Dialog>
         </Grid>

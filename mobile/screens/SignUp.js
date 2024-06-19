@@ -214,8 +214,9 @@ const styles = StyleSheet.create({
         width: 300,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#BFDCE5',
-        borderRadius: 50
+        borderRadius: 50,
+        borderColor: '#6961A8',
+        borderWidth: 2
     },
     textButtonSignIn: {
         fontSize: 18,

@@ -4,7 +4,7 @@ const db = require('../../database/database.js');
 
 router.get('/treatment-plan/:id', (req, res) => {
     db.query(
-        `SELECT uuid_treatment_plan, recommendation, morning, noon, evening, observation 
+        `SELECT uuid_treatment_plan, recommendation, morning, noon, evening, observations 
         FROM treatment_plans WHERE uuid_patient = ? AND (deleted_on IS NULL)`, req.params.id,
         (error, result) => {
             if(error)

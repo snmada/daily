@@ -1,24 +1,22 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect,  useRef } from 'react';
 import SideBar from '../../components/SideBar/SideBar.js';
 import NavBar from '../../components/NavBar/NavBar.js';
 import './PatientSkinData.scss';
 import {Grid, Typography, Button, Box, TextField, LinearProgress, Paper, IconButton, Tooltip, Radio, RadioGroup, FormControlLabel, FormControl} from '@mui/material';
-import {Undo as UndoIcon} from '@mui/icons-material';
 import axios from 'axios';
 import {useParams, useNavigate} from 'react-router-dom';
 import CustomAlert from '../../components/CustomAlert/CustomAlert.js';
 import {ModeEditOutline as ModeEditOutlineIcon} from '@mui/icons-material';
 
-const initialState = {phototype: '', skin_type: '', acne_type: '', acne_description: '', acne_localization: '', acne_severity: '', acne_history: '', treatment_history: '', observations: ''};
+const initialState = {phototype: '', skin_type: '', acne_type: '', acne_description: '', acne_localization: '', acne_severity: '', family_history: '', acne_history: '', treatment_history: '', observations: ''};
 
 function PatientSkinData()
 {
     const navigate = useNavigate();
     const param = useParams();
-    const [formData, setFormData] = useState({phototype: '', skin_type: '', acne_type: '', acne_description: '', acne_localization: '', acne_severity: '', acne_history: '', treatment_history: '', observations: ''});
+    const [formData, setFormData] = useState({phototype: '', skin_type: '', acne_type: '', acne_description: '', acne_localization: '', acne_severity: '', family_history: '', acne_history: '', treatment_history: '', observations: ''});
     const handleChange = (event) => setFormData({...formData, [event.target.name]: event.target.value});
     const token = sessionStorage.getItem('token');
-    const [patient, setPatient] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [addMode, setAddMode] = useState(false);
     const [editMode, setEditMode] = useState(false);
@@ -109,6 +107,7 @@ function PatientSkinData()
                 acne_description: formData.acne_description,
                 acne_localization: formData.acne_localization, 
                 acne_severity: formData.acne_severity, 
+                family_history:  formData.family_history,
                 acne_history: formData.acne_history, 
                 treatment_history: formData.treatment_history, 
                 observations: formData.observations
@@ -148,7 +147,8 @@ function PatientSkinData()
             acne_type: formData.acne_type, 
             acne_description: formData.acne_description,
             acne_localization: formData.acne_localization, 
-            acne_severity: formData.acne_severity, 
+            acne_severity: formData.acne_severity,
+            family_history:  formData.family_history,
             acne_history: formData.acne_history, 
             treatment_history: formData.treatment_history, 
             observations: formData.observations
@@ -161,6 +161,8 @@ function PatientSkinData()
         .then((response) => {
             if(response.status === 200)
             {
+                setDisabled(true); 
+                setEditMode(false);
                 setAlert({
                     severity: 'success',
                     text: 'Datele au fost salvate cu succes'
@@ -194,13 +196,11 @@ function PatientSkinData()
                     {alert && (<CustomAlert severity={alert.severity} text={alert.text}/>)}
                     <SideBar/>
                     <Grid item className='main-content'>
+                        
                         <NavBar title=''/>
-                        <Grid item xs={12} className='grid-item-path'>
-                            <Typography className='path'>
-                                <Button startIcon={<UndoIcon/>} variant='contained' onClick={() => {navigate(`/patients/${param.uuid_patient}`)}}>Înapoi</Button>
-                            </Typography>
-                        </Grid>
+                       
                         <Grid container className='grid-container'>
+                        <div className='box'></div>
                             <Paper elevation={5} className='paper'>
                                 {
                                     (!addMode && !editMode) && 
@@ -263,7 +263,7 @@ function PatientSkinData()
                                         placeholder='Introduceți aici.....' 
                                         maxRows={4} 
                                         style={{width: '100%'}}
-                                        value={formData.acne_description}
+                                        value={formData.acne_description || ''}
                                         onChange={handleChange}
                                     />
                                 </Grid>
@@ -276,7 +276,7 @@ function PatientSkinData()
                                         placeholder='Introduceți aici.....' 
                                         maxRows={4} 
                                         style={{width: '100%'}}
-                                        value={formData.acne_localization}
+                                        value={formData.acne_localization || ''}
                                         onChange={handleChange}
                                     />
                                 </Grid>
@@ -289,7 +289,22 @@ function PatientSkinData()
                                         placeholder='Introduceți aici.....' 
                                         maxRows={4} 
                                         style={{width: '100%'}}
-                                        value={formData.acne_severity}
+                                        value={formData.acne_severity || ''}
+                                        onChange={handleChange}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} className='grid-title' p={2}>
+                                    <Typography className='title'>Istoric familial</Typography>
+                                </Grid>
+                                <Grid item xs={12} py={2}>
+                                    <TextField 
+                                        disabled={disabled}
+                                        name='family_history'
+                                        multiline 
+                                        placeholder='Introduceți aici.....' 
+                                        maxRows={4} 
+                                        style={{width: '100%'}}
+                                        value={formData.family_history || ''}
                                         onChange={handleChange}
                                     />
                                 </Grid>
@@ -304,7 +319,7 @@ function PatientSkinData()
                                         placeholder='Introduceți aici.....' 
                                         maxRows={4} 
                                         style={{width: '100%'}}
-                                        value={formData.acne_history}
+                                        value={formData.acne_history || ''}
                                         onChange={handleChange}
                                     />
                                 </Grid>
@@ -319,7 +334,7 @@ function PatientSkinData()
                                         placeholder='Introduceți aici.....' 
                                         maxRows={4} 
                                         style={{width: '100%'}}
-                                        value={formData.treatment_history}
+                                        value={formData.treatment_history || ''}
                                         onChange={handleChange}
                                     />
                                 </Grid>
@@ -334,18 +349,18 @@ function PatientSkinData()
                                         placeholder='Introduceți aici.....' 
                                         maxRows={4} 
                                         style={{width: '100%'}}
-                                        value={formData.observations}
+                                        value={formData.observations || ''}
                                         onChange={handleChange}
                                     />
                                 </Grid>
                                 <Grid item xs={12} className='grid-button' pt={2} pb={2}>
-                                    {addMode && <Button variant='contained' className='save-button' onClick={() => {addSkinData()}}>SALVEAZĂ</Button>}
-        
-                                    {editMode && <Button variant='contained' className='save-button' onClick={() => {updateSkinData()}}>SALVEAZĂ DATELE MODIFICATE</Button>}
-        
                                     {addMode && <Button variant='outlined' className='cancel-button' onClick={() => {navigate(`/patients/${param.uuid_patient}`)}}>ANULEAZĂ</Button>}
         
                                     {editMode && <Button variant='outlined' className='cancel-button' onClick={() => {setDisabled(true); setEditMode(false)}}>ANULEAZĂ</Button>}
+                                    
+                                    {addMode && <Button variant='contained' className='save-button' onClick={() => {addSkinData()}}>SALVEAZĂ</Button>}
+        
+                                    {editMode && <Button variant='contained' className='save-button' onClick={() => {updateSkinData()}}>SALVEAZĂ DATELE MODIFICATE</Button>}
                                 </Grid>
                             </Paper>
                         </Grid>

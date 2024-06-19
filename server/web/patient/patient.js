@@ -14,18 +14,26 @@ function getBirthInfo(CNP)
     {
         case '1':
         case '5':
-        case '7':
             gender = 'M';
-            year = parseInt('19' + CNP.substring(1,3));
         break;
 
         case '2':
         case '6':
-        case '8':
             gender = 'F';
-            year = parseInt('20' + CNP.substring(1,3));
+        break;
+    }
+
+    switch(CNP.substring(0,1))
+    {
+        case '1':
+        case '2':;
+            year = parseInt('19' + CNP.substring(1,3));
         break;
 
+        case '5':
+        case '6':
+            year = parseInt('20' + CNP.substring(1,3));
+        break;
     }
 
     month = CNP.substring(3, 5);

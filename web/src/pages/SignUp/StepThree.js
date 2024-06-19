@@ -25,7 +25,7 @@ function StepThree({formData, handleChange, handlePrevStep})
     const handleMouseDownPassword = (event) => event.preventDefault();
 
     const schema = yup.object().shape({
-        email: yup.string().required('Câmp obligatoriu').email('Adresă de email invalidă'),
+        email: yup.string().required('Câmp obligatoriu').email('Adresă de e-mail invalidă'),
         password: yup.string().password(),
         confirmPassword: yup.string().required('Câmp obligatoriu').oneOf([yup.ref('password'), null], 'Parolele introduse nu coincid')
     });
@@ -36,6 +36,8 @@ function StepThree({formData, handleChange, handlePrevStep})
 
     const onSubmit =  () => {
         axios.post('http://localhost:3001/signup/stepThree', {
+            lastname: formData.lastname,
+            firstname: formData.firstname,
             email: formData.email,
             password: formData.password,
             CNP: formData.CNP
@@ -93,7 +95,7 @@ function StepThree({formData, handleChange, handlePrevStep})
                         value={formData.email} 
                         name='email' 
                         type='text' 
-                        label='Email' 
+                        label='E-mail' 
                         variant='outlined' 
                         onChange={handleChange} 
                         fullWidth

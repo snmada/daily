@@ -12,8 +12,8 @@ function SideBar()
         <Grid item className='sidebar' sx={{display: {xs: 'none', md: 'none', lg: 'block'}}}>
             <div className='sidebar-content'>
                 <div className='logo'>DAILY</div>
-                {sidebarItems.map((value, key) => (
-                    <button className='button' id={window.location.pathname.match(value.route)? 'active' : ''} onClick={() => {navigate(value.route)}}>
+                {sidebarItems.map((value, index) => (
+                    <button className='button' id={window.location.pathname.match(value.route)? 'active' : ''} onClick={() => {navigate(value.route)}} key={index}>
                         <span className='icon'>{value.icon}</span>
                         <span>{value.name}</span>
                     </button>

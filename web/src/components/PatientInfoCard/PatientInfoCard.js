@@ -250,7 +250,7 @@ function PatientInfoCard({alert, setAlert})
                                     </Grid>
 
                                     <Grid item xs={6}>
-                                        <Typography>Gen</Typography>
+                                        <Typography>Sex</Typography>
                                         {
                                             patientInfo.gender === 'F'?
                                                 <Typography>Feminin</Typography> : <Typography>Masculin</Typography>
@@ -281,8 +281,8 @@ function PatientInfoCard({alert, setAlert})
                 <Dialog fullScreen open={open} onClose={handleClose} className='dialog-edit'>
                     <AppBar className='appbar'>
                         <Toolbar>
-                            <Button className='save-button' type='submit' form='form' variant='contained'>Salvează</Button>
                             <Button className='cancel-button' variant='outlined' onClick={handleClose}>Anulează</Button>
+                            <Button className='save-button' type='submit' form='form' variant='contained'>Salvează</Button>
                         </Toolbar>
                     </AppBar>
 

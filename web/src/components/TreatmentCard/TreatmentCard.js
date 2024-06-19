@@ -15,10 +15,10 @@ import {
 import {v4 as uuidv4} from 'uuid';
 
 const emptyTableData = [
-    {index: 1, recommendation: '', morning: '', noon: '', evening: '', observation: '' },
-    {index: 2, recommendation: '', morning: '', noon: '', evening: '', observation: '' },
-    {index: 3, recommendation: '', morning: '', noon: '', evening: '', observation: '' },
-    {index: 4, recommendation: '', morning: '', noon: '', evening: '', observation: '' }
+    {index: 1, recommendation: '', morning: '', noon: '', evening: '', observations: '' },
+    {index: 2, recommendation: '', morning: '', noon: '', evening: '', observations: '' },
+    {index: 3, recommendation: '', morning: '', noon: '', evening: '', observations: '' },
+    {index: 4, recommendation: '', morning: '', noon: '', evening: '', observations: '' }
 ];
 
 function TreatmentCard({alert, setAlert})
@@ -35,15 +35,15 @@ function TreatmentCard({alert, setAlert})
     const handleCloseConfirmDialog = () => setConfirmDialog(false);
 
     const [tableData, setTableData] = useState([
-        {index: 1, recommendation: '', morning: '', noon: '', evening: '', observation: '' },
-        {index: 2, recommendation: '', morning: '', noon: '', evening: '', observation: '' },
-        {index: 3, recommendation: '', morning: '', noon: '', evening: '', observation: '' },
-        {index: 4, recommendation: '', morning: '', noon: '', evening: '', observation: '' }
+        {index: 1, recommendation: '', morning: '', noon: '', evening: '', observations: '' },
+        {index: 2, recommendation: '', morning: '', noon: '', evening: '', observations: '' },
+        {index: 3, recommendation: '', morning: '', noon: '', evening: '', observations: '' },
+        {index: 4, recommendation: '', morning: '', noon: '', evening: '', observations: '' }
     ]);
 
     const addRow = () => {
         const newIndex = tableData.length + 1;
-        setTableData([...tableData, {index: newIndex, recommendation: '', morning: '', noon: '', evening: '', observation: '' }]);
+        setTableData([...tableData, {index: newIndex, recommendation: '', morning: '', noon: '', evening: '', observations: '' }]);
     };
 
     const handleInputChange = (e, rowIndex, columnName) => {
@@ -112,8 +112,8 @@ function TreatmentCard({alert, setAlert})
                 morning: row.morning.trim() !== '' ? row.morning : '-',
                 noon: row.noon.trim() !== '' ? row.noon : '-',
                 evening: row.evening.trim() !== '' ? row.evening : '-',
-                observation: row.observation.trim() !== '' ? row.observation : '-',
-            })).filter(row => row.recommendation !== '-' && (row.morning !== '-' || row.noon !== '-' || row.evening !== '-' || row.observation !== '-'));
+                observations: row.observations.trim() !== '' ? row.observations : '-',
+            })).filter(row => row.recommendation !== '-' && (row.morning !== '-' || row.noon !== '-' || row.evening !== '-' || row.observations !== '-'));
     
             axios.post('http://localhost:3001/patient-profile/add-treatment-plan', {
                 uuid_patient: param.uuid_patient,
@@ -180,10 +180,10 @@ function TreatmentCard({alert, setAlert})
                 handleClose(true);
                 handleCloseConfirmDialog(true);
                 setTableData([
-                    {index: 1, recommendation: '', morning: '', noon: '', evening: '', observation: '' },
-                    {index: 2, recommendation: '', morning: '', noon: '', evening: '', observation: '' },
-                    {index: 3, recommendation: '', morning: '', noon: '', evening: '', observation: '' },
-                    {index: 4, recommendation: '', morning: '', noon: '', evening: '', observation: '' }
+                    {index: 1, recommendation: '', morning: '', noon: '', evening: '', observations: '' },
+                    {index: 2, recommendation: '', morning: '', noon: '', evening: '', observations: '' },
+                    {index: 3, recommendation: '', morning: '', noon: '', evening: '', observations: '' },
+                    {index: 4, recommendation: '', morning: '', noon: '', evening: '', observations: '' }
                 ]);
             }
         })
@@ -291,8 +291,8 @@ function TreatmentCard({alert, setAlert})
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions className='dialog-actions'>
-                            <Button className='save-button' variant='contained' onClick={() => addTreatmentPlan()}>SALVEAZĂ</Button>
                             <Button className='cancel-button' variant='outlined' onClick={handleClose}>Anulează</Button>
+                            <Button className='save-button' variant='contained' onClick={() => addTreatmentPlan()}>SALVEAZĂ</Button>
                         </DialogActions>
                         </>
                     )
@@ -333,7 +333,7 @@ function TreatmentCard({alert, setAlert})
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions className='dialog-actions'>
-                            <Button variant='outlined' className='cancel-button' startIcon={<DeleteIcon sx={{color: '#F52A2A'}}/>} onClick={handleOpenConfirmDialog}>ȘTERGE</Button>
+                            <Button variant='outlined' className='delete-button' startIcon={<DeleteIcon sx={{color: '#F52A2A'}}/>} onClick={handleOpenConfirmDialog}>ȘTERGE</Button>
                         </DialogActions>
                         </>
                     )
@@ -347,8 +347,8 @@ function TreatmentCard({alert, setAlert})
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions >
-                    <Button onClick={handleCloseConfirmDialog} variant='outlined'>ANULEAZĂ</Button>
-                    <Button onClick={() => deleteTreatmentPlan()} sx={{color: '#F52A2A'}}>ȘTERGE</Button>
+                    <Button variant='text' onClick={handleCloseConfirmDialog} sx={{color: '#686D76'}}>ANULEAZĂ</Button>
+                    <Button onClick={() => deleteTreatmentPlan()} variant='text' sx={{color: '#F52A2A', backgroundColor: '#FFEFEF'}}>ȘTERGE</Button>
                 </DialogActions>
             </Dialog>
         </div>

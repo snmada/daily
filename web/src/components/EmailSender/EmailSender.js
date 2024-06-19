@@ -12,7 +12,7 @@ function EmailSender(props)
     const [accountInfo, setAccountInfo] = useState({});
 
     const schema = yup.object().shape({
-        email: yup.string().required('Câmp obligatoriu').email('Adresă de email invalidă'),
+        email: yup.string().required('Câmp obligatoriu').email('Adresă de e-mail invalidă'),
     });
 
     const {register, handleSubmit, formState: {errors}} = useForm({
@@ -69,21 +69,21 @@ function EmailSender(props)
                             În această secțiune aveți posibilitatea de a solicita generarea unui cod de acces pentru pacienți, 
                             acest cod fiind necesar pentru înregistrarea lor în aplicația mobilă.
                         </Alert>
-                        <Typography sx={{py: 3, width: '100%'}}>Vă rugăm să introduceți adresa de email a pacientului pentru a trimite codul de acces către acesta.</Typography>
+                        <Typography sx={{py: 3, width: '100%'}}>Vă rugăm să introduceți adresa de e-mail a pacientului pentru a trimite codul de acces către acesta.</Typography>
                         <Grid item xs={5}>
                             <TextField 
                                 {...register('email')} 
                                 value={email} 
                                 name='email' 
                                 type='text' 
-                                label='Email' 
+                                label='E-mail' 
                                 variant='outlined' 
                                 onChange={(event) => setEmail(event.target.value)} 
                                 fullWidth
                             />
                         </Grid>
                         <Grid item xs={7} sx={{alignItems: 'center', display: 'flex', pl: 3}}>
-                            <Button variant='contained' size='large' type='submit'>TRIMITE</Button>
+                            <Button variant='contained' size='large' type='submit' sx={{backgroundColor: '#6961A8'}}>TRIMITE</Button>
                         </Grid>
                         <Typography className='error'>{errors.email?.message}</Typography>
                     </>
@@ -91,7 +91,7 @@ function EmailSender(props)
 
                 {accountInfo.status === 'Pending' && (
                     <Alert severity='success' sx={{fontSize: '17px', width: '100%'}}>
-                        Codul de acces a fost trimis cu succes la adresa de email {accountInfo.email} în data de {accountInfo.created_on}. <br/>
+                        Codul de acces a fost trimis cu succes la adresa de e-mail {accountInfo.email} în data de {accountInfo.created_on}. <br/>
                         {
                             (accountInfo.try_number === 1 || accountInfo.try_number === 2) && 
                             <>
@@ -107,23 +107,29 @@ function EmailSender(props)
                     </Alert>
                 )}
 
-                {(accountInfo.try_number === 1 || accountInfo.try_number === 2) && (
+                {accountInfo.status === 'Activated' && (
+                    <Alert severity='info' sx={{fontSize: '17px', width: '100%'}}>
+                        Vă informăm că pacientul și-a activat contul cu succes. Acum are acces la toate funcționalitățile disponibile în aplicația mobilă.
+                    </Alert>
+                )}
+
+                {(accountInfo.try_number === 1 || accountInfo.try_number === 2 && accountInfo.status !== 'Activated') && (
                     <>
-                        <Typography sx={{py: 3, width: '100%'}}>Vă rugăm să introduceți adresa de email a pacientului pentru a retrimite codul de acces către acesta.</Typography>
+                        <Typography sx={{py: 3, width: '100%'}}>Vă rugăm să introduceți adresa de e-mail a pacientului pentru a retrimite codul de acces către acesta.</Typography>
                         <Grid item xs={5}>
                             <TextField 
                                 {...register('email')} 
                                 value={email} 
                                 name='email' 
                                 type='text' 
-                                label='Email' 
+                                label='E-mail' 
                                 variant='outlined' 
                                 onChange={(event) => setEmail(event.target.value)} 
                                 fullWidth
                             />
                         </Grid>
                         <Grid item xs={7} sx={{alignItems: 'center', display: 'flex', pl: 3}}>
-                            <Button variant='contained' size='large' type='submit'>RETRIMITE</Button>
+                            <Button variant='contained' size='large' type='submit' sx={{backgroundColor: '#6961A8'}}>RETRIMITE</Button>
                         </Grid>
                         <Typography className='error'>{errors.email?.message}</Typography>
                     </>

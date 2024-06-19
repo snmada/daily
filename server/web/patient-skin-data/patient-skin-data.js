@@ -39,10 +39,10 @@ router.get('/data/:id', authenticateToken, (req, res) => {
 router.post('/add', authenticateToken, (req, res) => {
     db.query(
         'INSERT INTO patient_skin_data ' + 
-        '(uuid_patient, phototype, skin_type, acne_type, acne_description, acne_localization, acne_severity, acne_history, treatment_history, observations)' + 
-        ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        '(uuid_patient, phototype, skin_type, acne_type, acne_description, acne_localization, acne_severity, family_history, acne_history, treatment_history, observations)' + 
+        ' VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [req.body.uuid_patient, req.body.phototype, req.body.skin_type, req.body.acne_type, req.body.acne_description, 
-            req.body.acne_localization, req.body.acne_severity, req.body.acne_history, req.body.treatment_history, req.body.observations],
+            req.body.acne_localization, req.body.acne_severity, req.body.family_history, req.body.acne_history, req.body.treatment_history, req.body.observations],
         (error, result) => {
             if(error)
             {
@@ -59,9 +59,9 @@ router.post('/add', authenticateToken, (req, res) => {
 router.put('/update', authenticateToken, (req, res) => {
     db.query(
         'UPDATE patient_skin_data ' + 
-        'SET phototype = ?, skin_type = ?, acne_type = ?, acne_description = ?, acne_localization = ?, acne_severity = ?, acne_history = ?, treatment_history = ?, observations = ? WHERE uuid_patient = ?',
+        'SET phototype = ?, skin_type = ?, acne_type = ?, acne_description = ?, acne_localization = ?, acne_severity = ?, family_history = ?, acne_history = ?, treatment_history = ?, observations = ? WHERE uuid_patient = ?',
         [req.body.phototype, req.body.skin_type, req.body.acne_type, req.body.acne_description, req.body.acne_localization, 
-            req.body.acne_severity, req.body.acne_history, req.body.treatment_history, req.body.observations, req.body.uuid_patient],
+            req.body.acne_severity, req.body.family_history, req.body.acne_history, req.body.treatment_history, req.body.observations, req.body.uuid_patient],
         (error, result) => {
             if(error) 
             {

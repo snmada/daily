@@ -15,11 +15,12 @@ const generateAccessCode = () => {
 
     do{
         db.query(
-            'SELECT COUNT(*) AS count FROM patient_accounts WHERE accessCode = ?', accessCode, 
+            'SELECT COUNT(*) AS count FROM patient_accounts WHERE access_code = ?', accessCode, 
             (error, result) => {
                 if(error)
                 {
-                    res.status(500).send();
+                    //res.status(500).send();
+                    console.log(error);
                 }
                 else
                 {
@@ -63,14 +64,22 @@ router.post('/send', authenticateToken, (req, res) => {
                 sendEmail({
                     from: process.env.USER_EMAIL,
                     to: process.env.USER_EMAIL, //req.body.email,
-                    subject: 'Cod de acces - DAILY',
+                    subject: 'Codul dvs. de acces pentru înregistrarea în aplicația mobilă - DAILY',
                     html: `
-                        <h2>Salut!</h2>
-                        <p style='font-size:16px'>Cod de Acces: ${accessCode}</p>
+                        <p style='font-size:16px'>Stimate utilizator,</h2>
+                        <p style='font-size:16px'>Pentru a finaliza procesul de înregistrare, vă rugăm să folosiți codul de mai jos:</p>
+                        <p style='font-size:19px'><strong>Cod: ${accessCode}</strong></p>
+                        <p style='font-size:16px'>Vă rugăm să parcurgeți următorii pași:</p>
+                        <span style='font-size:16px'>1. Deschideți aplicația pe dispozitivul dvs.</span><br>
+                        <span style='font-size:16px'>2. Selectați opțiunea de înregistrare.</span><br>
+                        <span style='font-size:16px'>3. Introduceți codul de mai sus în câmpul "Cod pacient".</span><br>
+                        <span style='font-size:16px'>4. Continuați prin completarea informațiilor necesare pentru a finaliza înregistrarea.</span><br><br>
+                        <span style='font-size:16px; margin-top:50px'>Cu respect,</span><br>
+                        <span style='font-size:16px'>Echipa DAILY</span>
                     `
                 }).then(() => {
                     db.query(
-                        'INSERT INTO patient_accounts (uuid_patient, email, accessCode, created_on, status) VALUES (?, ?, ?, NOW(), "Pending")', 
+                        'INSERT INTO patient_accounts (uuid_patient, email, access_code, created_on, status) VALUES (?, ?, ?, NOW(), "Pending")', 
                         [req.body.uuid_patient, req.body.email, accessCode],
                         (error, result) => {
                             if(error)
@@ -85,7 +94,6 @@ router.post('/send', authenticateToken, (req, res) => {
                     );
                 }).catch((error) => {
                     res.status(500).send();
-                    console.log(error);
                 })
             }
         }

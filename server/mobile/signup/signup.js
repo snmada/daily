@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 
 router.post('/user-sign-up', (req, res) => {
     db.query(
-        'SELECT uuid_patient, status FROM patient_accounts WHERE accessCode = ?', req.body.accessCode, 
+        'SELECT uuid_patient, status FROM patient_accounts WHERE access_code = ?', req.body.accessCode, 
         (error, result) => {
             if(error)
             {
@@ -52,7 +52,7 @@ router.post('/user-sign-up', (req, res) => {
                                                             else
                                                             {
                                                                 db.query(
-                                                                    'UPDATE patient_accounts SET username = ?, password = ?, status = ? WHERE uuid_patient = ? AND accessCode = ?',
+                                                                    'UPDATE patient_accounts SET username = ?, password = ?, status = ? WHERE uuid_patient = ? AND access_code = ?',
                                                                     [req.body.username, hash, 'Activated', uuid_patient, req.body.accessCode],
                                                                     (error, result) => {
                                                                         if(error)

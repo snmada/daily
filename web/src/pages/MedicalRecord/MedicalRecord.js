@@ -3,14 +3,13 @@ import SideBar from '../../components/SideBar/SideBar.js';
 import NavBar from '../../components/NavBar/NavBar.js';
 import './MedicalRecord.scss';
 import {Grid, Typography, Button, Box, TextField, Paper, Slider} from '@mui/material';
-import {Undo as UndoIcon} from '@mui/icons-material';
 import axios from 'axios';
 import {useParams, useNavigate} from 'react-router-dom';
 import CustomAlert from '../../components/CustomAlert/CustomAlert.js';
 
 const initialState = {
     comedones: '', papules: '', pustules: '', nodules: '', cysts: '', affected_areas: '', observed_changes: '', 
-    adverse_reactions: '', discomfort_level: '', quality_life_level: '', doctor_observations: '', patient_observations: '', recommendation: ''
+    adverse_reactions: '', discomfort_level: 1, quality_life_level: 1, doctor_observations: '', patient_observations: '', recommendation: ''
 };
 
 function MedicalRecord()
@@ -19,7 +18,7 @@ function MedicalRecord()
     const param = useParams();
     const [formData, setFormData] = useState(
         {comedones: '', papules: '', pustules: '', nodules: '', cysts: '', affected_areas: '', observed_changes: '', 
-        adverse_reactions: '', discomfort_level: '', quality_life_level: '', doctor_observations: '', patient_observations: '', recommendation: ''}
+        adverse_reactions: '', discomfort_level: 1, quality_life_level: 1, doctor_observations: '', patient_observations: '', recommendation: ''}
     );
     const handleChange = (event) => setFormData({...formData, [event.target.name]: event.target.value});
     const token = sessionStorage.getItem('token');
@@ -118,11 +117,6 @@ function MedicalRecord()
             <SideBar/>
             <Grid item className='main-content'>
                 <NavBar title=''/>
-                <Grid item xs={12} className='grid-item-path'>
-                    <Typography className='path'>
-                       <Button startIcon={<UndoIcon/>} variant='contained' onClick={() => {navigate(`/patients/${param.uuid_patient}`)}}>Înapoi</Button>
-                    </Typography>
-                </Grid>
                 <Grid container className='grid-container'>
                     <Paper elevation={5} className='paper'>
                         <Typography sx={{textAlign: 'center', fontSize: '25px'}} py={4}>Formular consultație</Typography>
@@ -236,7 +230,6 @@ function MedicalRecord()
                                 <Box px={10}>
                                     <Slider
                                         name='discomfort_level'
-                                        defaultValue={1}
                                         value={formData.discomfort_level}
                                         onChange={handleChange}
                                         step={1}
@@ -252,7 +245,6 @@ function MedicalRecord()
                             <Typography pb={2} className='title'>Impactul asupra calității vieții (scala 1-10)</Typography>
                             <Box px={10}>
                                 <Slider
-                                    defaultValue={1}
                                     name='quality_life_level'
                                     value={formData.quality_life_level}
                                     onChange={handleChange}
@@ -314,8 +306,8 @@ function MedicalRecord()
                             {
                                 !disabled &&
                                 <>
-                                    <Button variant='contained' className='save-button' onClick={() => {addMedicalRecord()}}>SALVEAZĂ</Button>
                                     <Button variant='outlined' className='cancel-button' onClick={() => {navigate(`/patients/${param.uuid_patient}`)}}>ANULEAZĂ</Button>
+                                    <Button variant='contained' className='save-button' onClick={() => {addMedicalRecord()}}>SALVEAZĂ</Button>
                                 </>
                             }
                         </Grid>

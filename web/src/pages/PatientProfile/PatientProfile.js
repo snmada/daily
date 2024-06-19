@@ -83,7 +83,7 @@ function PatientProfile()
                 <SideBar/>
                 <Grid item className='main-content'>
                     <NavBar title=''/>
-                    <Grid container>
+                    <Grid container mt={4}>
                         <Grid item xs={5}>
                             <PatientInfoCard alert={alert} setAlert={setAlert}/>
                         </Grid>
@@ -102,7 +102,7 @@ function PatientProfile()
                                                 <TabList onChange={handleChangeTabValue}>
                                                     <Tab label='Consultații' value='1'/>
                                                     <Tab label='Afecțiuni medicale' value='2'/>
-                                                    <Tab label='Cod access - Aplicație mobilă' value='3'/>
+                                                    <Tab label='Cod de acces - Aplicație mobilă' value='3'/>
                                                 </TabList>
                                             </Box>
                                             <TabPanel value='1'>

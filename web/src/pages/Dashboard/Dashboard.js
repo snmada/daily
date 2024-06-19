@@ -4,7 +4,7 @@ import SideBar from '../../components/SideBar/SideBar.js';
 import NavBar from '../../components/NavBar/NavBar.js';
 import './Dashboard.scss';
 import {jwtDecode} from 'jwt-decode';
-import greetingImg from '../../images/undraw_team_re_0bfe.svg';
+import greetingImg from '../../images/undraw_lightbulb_moment_re_ulyo.svg';
 import cardImg from '../../images/card-image.svg';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
@@ -26,7 +26,10 @@ function Dashboard()
     const [name, setName] = useState('');
     const [currentTime, setCurrentTime] = useState(new Date().getHours());
     const [greeting, setGreeting] = useState('');
-    const [data, setData] = useState({});
+    const [data, setData] = useState({
+        totalPatients: 0, averageAge: 0, totalFemale: 0, totalMale: 0, totalFRosacea: 0, totalFVulgaris: 0, totalFJuvenile: 0, totalFCystic: 0, 
+        totalMRosacea: 0, totalMVulgaris: 0, totalMJuvenile: 0, totalMCystic: 0, totalRosacea: 0, totalVulgaris: 0, totalJuvenile: 0, totalCystic: 0
+    });
     const [medicalRecords, setMedicalRecords] = useState([]);
     const [totalMR, setTotalMR] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
@@ -149,7 +152,7 @@ function Dashboard()
             <SideBar/>
             <Grid item className='main-content'>
                 <NavBar title=''/>
-                <Grid container spacing={2} mt={1} mb={30}>
+                <Grid container spacing={2} mt={1} mb={0}>
                     <Grid item xs={9}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
@@ -173,7 +176,7 @@ function Dashboard()
                                             <Groups2Icon className='icon'/>
                                         </Grid>
                                         <Grid item xs={12}><h2>Pacienți</h2></Grid>
-                                        <Grid item xs={12}><h1>{data.totalPatients}</h1></Grid> 
+                                        <Grid item xs={12}><h1>{!data.totalPatients? '0' : data.totalPatients}</h1></Grid> 
                                     </Grid>
                                 </Grid>
                             </Grid>
@@ -201,54 +204,65 @@ function Dashboard()
                                             <AccessibilityNewIcon className='icon'/>
                                         </Grid>
                                         <Grid item xs={12}><h2>Vârsta medie</h2></Grid>
-                                        <Grid item xs={12}><h1>{data.averageAge}</h1></Grid>
+                                        <Grid item xs={12}><h1>{!data.averageAge? '-' : data.averageAge}</h1></Grid>
                                     </Grid>
                                 </Grid>
                             </Grid>
                             <Grid item xs={12}>
                                 <Grid container className='chart-container'>
-                                    <Grid item xs={6} className='pie-chart'>
-                                        <Typography py={2} fontSize={'18px'}>Distribuția pacienților</Typography>
-                                        <PieChart
-                                            series={[
-                                                {data: [
-                                                    {id: 0, value: data.totalFemale, label: 'Feminin', color: '#E1AFD1'},
-                                                    {id: 1, value: data.totalMale, label: 'Masculin', color: '#6AD4DD'}]
-                                                }
-                                            ]}
-                                            width={400}
-                                            height={220}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={6} className='pie-chart'>
-                                        <Typography py={2} fontSize={'18px'}>Distribuția pacienților</Typography>
-                                        <PieChart
-                                            series={[
-                                                {data: [
-                                                    {id: 0, value: data.totalRosacea, label: 'Rozacee', color: '#D2E0FB'},
-                                                    {id: 1, value: data.totalVulgaris, label: 'Vulgară', color: '#FFDBAA'},
-                                                    {id: 2, value: data.totalJuvenile, label: 'Juvenilă', color: '#B0D9B1'},
-                                                    {id: 3, value: data.totalCystic, label: 'Chistică', color: '#8EACCD'}]
-                                                }
-                                            ]}
-                                            width={400}
-                                            height={220}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} py={10} className='bar-chart'>
-                                        <Typography  fontSize={'18px'}>Distribuția pacienților</Typography>
-                                        <BarChart
-                                            dataset={dataset}
-                                            series={[
-                                                {dataKey: 'female', label: 'Feminin', color: '#E1AFD1'},
-                                                {dataKey: 'male', label: 'Masculin', color: '#6AD4DD'},
-                                        
-                                            ]}
-                                            height={400}
-                                            xAxis={[{dataKey: 'acne_type', scaleType: 'band'}]}
-                                            margin={{top: 110, bottom: 30, left: 40, right: 10}}
-                                        />
-                                    </Grid>
+                                    {data.totalPatients?
+                                        (
+                                            <>
+                                            <Grid item xs={6} className='pie-chart'>
+                                                <Typography py={2} fontSize={'18px'}>Distribuția pacienților în funcție de sexul acestora</Typography>
+                                                <PieChart
+                                                    series={[
+                                                        {data: [
+                                                            {id: 0, value: data.totalFemale, label: 'Feminin', color: '#E1AFD1'},
+                                                            {id: 1, value: data.totalMale, label: 'Masculin', color: '#6AD4DD'}]
+                                                        }
+                                                    ]}
+                                                    width={400}
+                                                    height={220}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={6} className='pie-chart'>
+                                                <Typography py={2} fontSize={'18px'}>Distribuția pacienților în funcție de tipul de acnee</Typography>
+                                                <PieChart
+                                                    series={[
+                                                        {data: [
+                                                            {id: 0, value: data.totalRosacea, label: 'Rozacee', color: '#D2E0FB'},
+                                                            {id: 1, value: data.totalVulgaris, label: 'Vulgară', color: '#FFDBAA'},
+                                                            {id: 2, value: data.totalJuvenile, label: 'Juvenilă', color: '#B0D9B1'},
+                                                            {id: 3, value: data.totalCystic, label: 'Chistică', color: '#8EACCD'}]
+                                                        }
+                                                    ]}
+                                                    width={400}
+                                                    height={220}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={12} py={6} className='bar-chart'>
+                                                <Typography fontSize={'18px'}>Distribuția pacienților după sexul acestora pentru fiecare tip de acnee</Typography>
+                                                <BarChart
+                                                    dataset={dataset}
+                                                    series={[
+                                                        {dataKey: 'female', label: 'Feminin', color: '#E1AFD1'},
+                                                        {dataKey: 'male', label: 'Masculin', color: '#6AD4DD'},
+                                                    ]}
+                                                    height={400}
+                                                    xAxis={[{dataKey: 'acne_type', scaleType: 'band'}]}
+                                                    margin={{top: 110, bottom: 30, left: 40, right: 10}}
+                                                />
+                                            </Grid>
+                                            </>
+                                        )
+                                        :
+                                        (
+                                            <Grid item xs={12}>
+                                                <Typography sx={{textAlign: 'center', padding: '50px'}}>Lipsă date</Typography>
+                                            </Grid>
+                                        )
+                                    }
                                 </Grid>
                             </Grid>
                         </Grid>
@@ -267,12 +281,12 @@ function Dashboard()
                                     <Typography pb={3}>Consultații recente</Typography>
                                     <Stepper orientation='vertical'>
                                         {
-                                            !isLoading?
+                                            !isLoading? 
                                             (
                                                 medicalRecords.length !== 0? 
                                                 (
                                                     medicalRecords.map((medicalRecord, index) => (
-                                                        <Step key={index}>
+                                                        <Step key={index} >
                                                             <StepLabel StepIconComponent={ContentPasteIcon} onClick={() => navigate(`/patients/${medicalRecord.uuid_patient}/view-medical-record/${medicalRecord.id_medical_record}`)}>
                                                                 <Grid container sx={{cursor: 'pointer'}}>
                                                                     <Grid item xs={10}>
@@ -287,7 +301,7 @@ function Dashboard()
                                                 : 
                                                 (
                                                     <Box className='no-data-box'>
-                                                        <Typography sx={{color: '#61677A'}} pb={2}>Nu există consultații</Typography>
+                                                        <Typography sx={{color: '#61677A'}} pb={2}>Nu există consultații recente</Typography>
                                                     </Box>
                                                 )
                                             )
