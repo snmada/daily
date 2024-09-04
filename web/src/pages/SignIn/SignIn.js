@@ -24,7 +24,7 @@ function SignIn()
     const handleChange = (event) => setFormData({...formData, [event.target.name]: event.target.value});
 
     const schema = yup.object().shape({
-        email: yup.string().required('Câmp obligatoriu').email('Vă rugăm să folosiți o adresă de email validă'),
+        email: yup.string().required('Câmp obligatoriu').email('Vă rugăm să folosiți o adresă de e-mail validă'),
         password: yup.string().required('Câmp obligatoriu')
     });
 
@@ -65,7 +65,7 @@ function SignIn()
                                         {...register('email')} 
                                         name='email' 
                                         type='text' 
-                                        label='Email' 
+                                        label='E-mail' 
                                         variant='outlined' 
                                         fullWidth 
                                         onChange={handleChange}

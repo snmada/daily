@@ -99,7 +99,7 @@ export default function Gallery()
                                         </ScrollView>
                                     </View>
                                 ))}
-                                <Modal visible={fullScreenImage !== null} transparent={true} onRequestClose={closeFullScreen}>
+                                <Modal visible={fullScreenImage !== null} transparent={false} onRequestClose={closeFullScreen}>
                                     <View style={styles.modalContainer}>
                                         <TouchableOpacity style={styles.closeButton} onPress={closeFullScreen}>
                                             <FontAwesomeIcon icon={faX} size={15} style={styles.icon}/>
@@ -234,5 +234,8 @@ const styles = StyleSheet.create({
     noData: {
         marginTop: 20,
         fontSize: 18
+    },
+    icon: {
+        color: '#FBFBFB'
     }
 });

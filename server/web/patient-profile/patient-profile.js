@@ -12,18 +12,26 @@ function getBirthInfo(CNP)
     {
         case '1':
         case '5':
-        case '7':
             gender = 'M';
-            year = parseInt('19' + CNP.substring(1,3));
         break;
 
         case '2':
         case '6':
-        case '8':
             gender = 'F';
-            year = parseInt('20' + CNP.substring(1,3));
+        break;
+    }
+
+    switch(CNP.substring(0,1))
+    {
+        case '1':
+        case '2':;
+            year = parseInt('19' + CNP.substring(1,3));
         break;
 
+        case '5':
+        case '6':
+            year = parseInt('20' + CNP.substring(1,3));
+        break;
     }
 
     month = CNP.substring(3, 5);
@@ -64,7 +72,22 @@ router.get('/patient-info/:id', authenticateToken, (req, res) => {
             {
                 if(result)
                 {
-                    res.status(200).send(result[0]);
+                    const birthInfo = getBirthInfo(result[0].CNP);
+                    const age = birthInfo[1];
+
+                    db.query(`UPDATE patients SET age = ? WHERE uuid_patient  = ?`, [age, req.params.id],
+                        (error) => {
+                            if(error)
+                            {
+                                res.status(500).send();
+                            }
+                            else
+                            {
+                                result[0].age = birthInfo[1];
+                                res.status(200).send(result[0]);
+                            }
+                        }
+                    );
                 }
             }
         }
@@ -133,7 +156,7 @@ router.put('/update-info', authenticateToken, (req, res) => {
         const birthInfo = getBirthInfo(req.body.updated_CNP);
         db.query(
             'UPDATE patients set lastname = ?, firstname = ?, CNP = ?, birthdate = ?, age = ?, gender = ?, weight = ?, height = ?, address = ?, ' + 
-                'country = ?, phone = ?, edited_on = NOW() WHERE uuid_patient = ?', 
+                'country = ?, phone = ? WHERE uuid_patient = ?', 
             [req.body.lastname, req.body.firstname, req.body.updated_CNP, birthInfo[0], birthInfo[1], birthInfo[2], 
                 req.body.weight, req.body.height, req.body.address, req.body.country, req.body.phone, req.body.uuid_patient],
             (error, result) => {
@@ -199,7 +222,7 @@ router.get('/acne-type/:id', authenticateToken, (req, res) => {
 
 router.get('/treatment-plan/:id', authenticateToken, (req, res) => {
     db.query(
-        'SELECT uuid_treatment_plan, recommendation, morning, noon, evening, observation FROM treatment_plans WHERE uuid_patient = ? AND (deleted_on IS NULL)', req.params.id,
+        'SELECT uuid_treatment_plan, recommendation, morning, noon, evening, observations FROM treatment_plans WHERE uuid_patient = ? AND (deleted_on IS NULL)', req.params.id,
         (error, result) => {
             if(error)
             {
@@ -227,13 +250,13 @@ router.post('/add-treatment-plan', authenticateToken, (req, res) => {
         row.morning,
         row.noon,
         row.evening,
-        row.observation,
+        row.observations,
         new Date(), 
         null
     ]);
 
     db.query(
-        'INSERT INTO treatment_plans (uuid_patient, uuid_treatment_plan, recommendation, morning, noon, evening, observation, date, deleted_on) VALUES ?', 
+        'INSERT INTO treatment_plans (uuid_patient, uuid_treatment_plan, recommendation, morning, noon, evening, observations, date, deleted_on) VALUES ?', 
         [values],
         (error, result) => {
             if(error) 
@@ -330,5 +353,7 @@ router.put('/delete-medical-condition/:id', authenticateToken, (req, res) => {
         }
     );
 });
+
+
 
 module.exports = router;

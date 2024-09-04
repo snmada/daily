@@ -85,7 +85,7 @@ export default function Treatment()
                                             </View>
                                         </View>
                                         <View style={[styles.cell, styles.secondColumn]}>
-                                            <Text style={styles.cellText}>{treatment.observation}</Text>
+                                            <Text style={styles.cellText}>{treatment.observations}</Text>
                                         </View>
                                     </View>
                                 </View>

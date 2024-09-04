@@ -9,18 +9,8 @@
         min-height: 100vh;
         margin: 0px 25px;
 
-        .grid-item-path{
-            padding: 18px 0px;
-            display: flex;
-            align-items: center;
-
-            .path{
-                font-size: 17px;
-                padding-right: 15px;
-            }
-        }
-
         .grid-container{
+            padding: 39px 0px;
             background: transparent;
             display: flex;
             align-items: center;

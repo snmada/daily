@@ -165,8 +165,8 @@ function MedicalConditionCard({alert, setAlert})
                                                 <TextField
                                                     name='name'
                                                     label='Afecțiune'
-                                                    defaultValue={condition.name}
-                                                    value={medicalConditions[index].name}
+                                                    //defaultValue={condition.name}
+                                                    value={medicalConditions[index].name || ''}
                                                     onChange={(event) => updateConditionValue(index, 'name', event.target.value)}
                                                     fullWidth
                                                 
@@ -176,8 +176,8 @@ function MedicalConditionCard({alert, setAlert})
                                                     <TextField
                                                         name='treatment'
                                                         label='Tratament'
-                                                        defaultValue={condition.treatment}
-                                                        value={medicalConditions[index].treatment} 
+                                                        //defaultValue={condition.treatment}
+                                                        value={medicalConditions[index].treatment || ''} 
                                                         onChange={(event) => updateConditionValue(index, 'treatment', event.target.value)}
                                                         fullWidth
                                                     />
@@ -267,8 +267,8 @@ function MedicalConditionCard({alert, setAlert})
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions >
-                    <Button onClick={handleCloseConfirmDialog} variant='outlined'>ANULEAZĂ</Button>
-                    <Button  onClick={() => deleteMedicalCondition()} sx={{color: '#F52A2A'}}>ȘTERGE</Button>
+                    <Button onClick={handleCloseConfirmDialog} variant='text' sx={{color: '#686D76'}}>ANULEAZĂ</Button>
+                    <Button onClick={() => deleteMedicalCondition()} variant='text' sx={{color: '#F52A2A', backgroundColor: '#FFEFEF'}}>ȘTERGE</Button>
                 </DialogActions>
             </Dialog>
         </Grid>

@@ -311,8 +311,8 @@ function Patient()
                             {errorMessage &&  <Alert severity='error' width={'100%'}>{errorMessage}</Alert>}
                         </DialogContent>
                         <DialogActions className='dialog-actions'>
-                            <Button className='save-button' variant='contained' type='submit'>Salvează</Button>
                             <Button className='cancel-button' variant='outlined' onClick={handleClose}>Anulează</Button>
+                            <Button className='save-button' variant='contained' type='submit'>Salvează</Button>
                         </DialogActions>
                     </form>
                 </Dialog>

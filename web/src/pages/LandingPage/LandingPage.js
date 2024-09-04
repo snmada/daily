@@ -41,7 +41,7 @@ function LandingPage()
                                     <span className='span'>
                                         Aplicație Web <LanguageIcon className='language-icon'/> pentru medici. Gestionați eficient tratamentele
                                     </span> 
-                                    și monitorizați progresul pacienților cu o platformă intuitivă.
+                                    și monitorizați progresul pacienților.
                                 </Typography>
                                 </Box>
                             <Box className='box-item'>
@@ -54,7 +54,7 @@ function LandingPage()
                                 </Typography>
                             </Box>
                             <Box className='box-register'>
-                                <Button variant='contained' className='button-register'>Înregistrează-te</Button>
+                                <Button variant='contained' className='button-register' onClick={() => navigate('/signup')}>Înregistrează-te</Button>
                                 <SwipeUpIcon className='swipe-icon'/>
                             </Box>
                         </Paper>
@@ -70,7 +70,7 @@ function LandingPage()
                 viewBox='0 0 1440 170'>
                     <path 
                         fill='#FFCF81' 
-                        fill-opacity='1' 
+                        fillOpacity='1' 
                         d='M0,64L48,58.7C96,53,192,43,288,42.7C384,43,480,53,576,74.7C672,96,768,128,864,
                             133.3C960,139,1056,117,1152,117.3C1248,117,1344,139,1392,149.3L1440,160L1440,
                             320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,

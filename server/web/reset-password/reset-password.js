@@ -72,8 +72,12 @@ router.post('/generate-reset-code', (req, res) => {
                         to: process.env.USER_EMAIL, //req.body.email,
                         subject: 'Resetare parolă - DAILY',
                         html: `
-                            <h2>Salut!</h2>
-                            <p style='font-size:16px'>Cod de resetare: ${resetCode}</p>
+                            <p style='font-size:16px'>Stimate utilizator,</p>
+                            <p style='font-size:16px'>Am primit solicitarea dvs. de a reseta parola contului asociat cu această adresă de e-mail. Vă rugăm să folosiți codul de mai jos pentru a finaliza procesul.</p>
+                            <p style='font-size:19px'><strong>Cod de resetare: ${resetCode}</strong></p>
+                            <p style='font-size:16px'>Atenție! Acest cod este valabil pentru următoarele <strong>5 minute</strong>. Vă recomandăm să nu-l împărtășiți cu alte persoane.</p>
+                            <span style='font-size:16px'>Cu respect,</span><br>
+                            <span style='font-size:16px'>Echipa DAILY</span>
                         `
                     }).then(() => {
                         db.query(
@@ -92,7 +96,6 @@ router.post('/generate-reset-code', (req, res) => {
                         );
                     }).catch((error) => {
                         res.status(500).send();
-                        console.log(error);
                     })
                 }
                 else

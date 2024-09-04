@@ -86,6 +86,9 @@ export default function SignIn()
                     name='password'
                 />
                 {errors.password && <Text style={styles.error}>{errors.password.message}</Text>}
+                <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+                    <Text>Nu-mi amintesc parola</Text>
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.buttonSignIn} onPress={handleSubmit(onSubmit)}>
                     <Text style={styles.textButtonSignIn}>Intră în cont</Text>
                 </TouchableOpacity>
@@ -154,8 +157,10 @@ const styles = StyleSheet.create({
         width: 300,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#BFDCE5',
-        borderRadius: 50
+        //backgroundColor: '#BFDCE5',
+        borderRadius: 50,
+        borderColor: '#6961A8',
+        borderWidth: 2
     },
     textButtonSignUp: {
         fontSize: 18,

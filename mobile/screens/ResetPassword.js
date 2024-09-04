@@ -25,7 +25,7 @@ export default function ResetPassword()
     const [resetCode, setResetCode] = useState('');
 
     const schemaEmail = yup.object().shape({
-        email: yup.string().required('Câmp obligatoriu').email('Adresă de email invalidă'),
+        email: yup.string().required('Câmp obligatoriu').email('Adresă de e-mail invalidă'),
     });
     const {control: controlEmail, handleSubmit: handleSubmitEmail, formState: {errors: emailErrors}} = useForm({
         resolver: yupResolver(schemaEmail),
@@ -87,7 +87,7 @@ export default function ResetPassword()
         .then((response) => {
             if(response.status === 200)
             {
-                setSuccesMessage('Parola a fost resetată cu success');
+                setSuccesMessage('Parola a fost resetată cu succes');
             }
         })
         .catch((error) => {
@@ -97,8 +97,8 @@ export default function ResetPassword()
 
     return(
         <View style={styles.container}>
-            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-                <Text style={{color: '#6961A8', fontSize: 18, marginBottom: 35}}><FontAwesomeIcon icon={faReply} style={{color: '#6961A8'}} size={15}/> Înapoi</Text>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Text style={{color: '#6961A8', fontSize: 18, marginBottom: 35}}><FontAwesomeIcon icon={faReply} style={{color: '#6961A8'}} size={15}/>Înapoi</Text>
             </TouchableOpacity>
             <View style={styles.header}>
                 <Text style={styles.title}>Resetare parolă</Text>
@@ -107,7 +107,7 @@ export default function ResetPassword()
                 {
                     stepOne && (
                         <>
-                            <Text style={styles.info}>Vă rugăm să introduceți adresa de email asociată contului dvs. pentru a primi codul de resetare a parolei.</Text>
+                            <Text style={styles.info}>Vă rugăm să introduceți adresa de e-mail asociată contului dvs. pentru a primi codul de resetare a parolei.</Text>
                             <Controller
                                 control={controlEmail}
                                 render={({field: {onChange, value}}) => (
@@ -115,7 +115,7 @@ export default function ResetPassword()
                                         <FontAwesomeIcon icon={faAt} style={styles.icon} size={15}/>
                                         <TextInput 
                                             style={styles.textInput}
-                                            placeholder='Email'
+                                            placeholder='E-mail'
                                             onChangeText={onChange}
                                             value={value}
                                         /> 
@@ -136,7 +136,7 @@ export default function ResetPassword()
                 {
                     stepTwo && (
                         <>
-                            <Text style={styles.info}>Dacă adresa de email este corectă, veți primi un cod de resetare pe care vă rugăm să-l introduceți în câmpul de mai jos.</Text>
+                            <Text style={styles.info}>Dacă adresa de e-mail este corectă, veți primi un cod de resetare pe care vă rugăm să-l introduceți în câmpul de mai jos.</Text>
                             <View style={styles.viewTextInput}>
                                 <FontAwesomeIcon icon={faShieldHalved} style={styles.icon} size={15}/>
                                 <TextInput 

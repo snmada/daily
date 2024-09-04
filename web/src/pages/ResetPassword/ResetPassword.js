@@ -90,7 +90,7 @@ function ResetPassword()
         .then((response) => {
             if(response.status === 200)
             {
-                setSuccesMessage('Parola a fost resetată cu success');
+                setSuccesMessage('Parola a fost resetată cu succes');
             }
         })
         .catch((error) => {
@@ -148,7 +148,7 @@ function ResetPassword()
                                 <form onSubmit={handleSubmitEmail(onSubmitEmail)}>
                                     <Grid container>
                                         <Typography sx={{fontSize: '16px', color: 'gray'}}>
-                                            Vă rugăm să introduceți adresa de email asociată contului dvs. pentru a primi codul de resetare a parolei.
+                                            Vă rugăm să introduceți adresa de e-mail asociată contului dvs. pentru a primi codul de resetare a parolei.
                                         </Typography>
                                         <Grid item xs={12} py={2}>
                                             <TextField 
@@ -172,7 +172,7 @@ function ResetPassword()
                         {
                             stepTwo && (
                                 <Grid container>
-                                    {infoMessage &&  <Alert severity='info' sx={{width: '100%'}}>{infoMessage}</Alert>}
+                                    {infoMessage && <Alert severity='info' sx={{width: '100%'}}>Dacă adresa de e-mail este corectă, veți primi un cod de resetare pe care vă rugăm să-l introduceți în câmpul de mai jos.</Alert>}
                                     <Grid item xs={12} py={2}>
                                         <TextField 
                                             name='code' 
