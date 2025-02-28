@@ -39,7 +39,7 @@ The following diagram provides a visual representation of all actions a patient 
 
 ### Frontend
 - **React.js 18** 
-- **React Native 18**
+- **React Native**
 - **Expo**
 - **Material UI**
 - **SCSS**
